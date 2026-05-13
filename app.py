@@ -38,20 +38,105 @@ html, body, [class*="css"] {
 }
 
 /* ── Background surfaces ── */
-/* Warm off-white — softer than pure white, easier on the eye over long sessions */
+/* Warm off-white canvas — softer than pure white */
 [data-testid="stAppViewContainer"] {
     background-color: #F7F6F3;
 }
 section.main > div {
     background-color: #F7F6F3;
 }
-/* Sidebar gets a faint purple tint to anchor it to the brand */
+/* Sidebar — faint purple tint anchors brand */
 [data-testid="stSidebar"] {
     background-color: #F0EFF9;
 }
-/* Keep content blocks white so they lift off the background */
+/* Content blocks stay pure white so they lift clearly off the canvas */
 .sc-box, .sc-privacy, .sc-coming-soon {
     background-color: #FFFFFF;
+}
+
+/* ── Global text contrast fixes ── */
+/* WCAG AA requires 4.5:1 ratio for normal text on #F7F6F3.
+   Primary text: #1A1A2E (near-black) — ratio ~14:1. Always passes.
+   Secondary text: #374151 — ratio ~7:1. Passes at all sizes.          */
+html, body, [class*="css"] {
+    color: #1A1A2E;
+}
+[data-testid="stMarkdownContainer"] p,
+[data-testid="stMarkdownContainer"] li,
+[data-testid="stMarkdownContainer"] span {
+    color: #1A1A2E !important;
+    font-size: 0.9rem;
+    line-height: 1.7;
+}
+/* Form labels */
+[data-testid="stWidgetLabel"] label,
+[data-testid="stWidgetLabel"] p,
+.stTextArea label, .stSelectbox label,
+.stNumberInput label, .stRadio label {
+    color: #1A1A2E !important;
+    font-weight: 500 !important;
+}
+/* Captions */
+[data-testid="stCaptionContainer"] p {
+    color: #374151 !important;
+    font-size: 0.8rem;
+}
+/* Sidebar */
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] span,
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] div {
+    color: #1A1A2E !important;
+}
+/* Checkbox */
+[data-testid="stCheckbox"] label p,
+[data-testid="stCheckbox"] span {
+    color: #1A1A2E !important;
+    font-size: 0.875rem !important;
+}
+/* Tabs */
+div[data-baseweb="tab"] button p,
+div[data-baseweb="tab"] span {
+    color: #1A1A2E !important;
+    font-weight: 500;
+}
+/* Radio */
+[data-testid="stRadio"] label span {
+    color: #1A1A2E !important;
+}
+/* Inputs */
+[data-baseweb="select"] div,
+[data-baseweb="input"] input {
+    color: #1A1A2E !important;
+}
+
+/* ── Consent checkbox reveal cue ── */
+.sc-consent-wrap {
+    background: #FFFFFF;
+    border: 2px dashed #CECBF6;
+    border-radius: 12px;
+    padding: 1rem 1.25rem 0.75rem;
+    margin: 0.75rem 0;
+    transition: border-color 0.2s, background 0.2s;
+}
+.sc-consent-wrap:hover {
+    border-color: #534AB7;
+}
+.sc-consent-hint {
+    font-size: 0.78rem;
+    color: #534AB7;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.sc-consent-unlocks {
+    font-size: 0.75rem;
+    color: #374151;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid #E5E7EB;
 }
 
 /* ── Header ── */
@@ -149,7 +234,7 @@ section.main > div {
 }
 .persona-desc {
     font-size: 0.8rem;
-    color: #6B7280;
+    color: #374151;
     line-height: 1.55;
     margin-bottom: 16px;
 }
@@ -242,7 +327,7 @@ section.main > div {
 .sc-coming-soon-title {
     font-size: 0.8rem;
     font-weight: 600;
-    color: #6B7280;
+    color: #374151;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 12px;
@@ -264,7 +349,7 @@ section.main > div {
     flex-shrink: 0;
     color: #534AB7;
 }
-.sc-capability-text { font-size: 0.8rem; color: #374151; line-height: 1.45; }
+.sc-capability-text { font-size: 0.8rem; color: #1A1A2E; line-height: 1.45; }
 .sc-capability-badge {
     display: inline-block;
     font-size: 0.65rem;
@@ -272,7 +357,7 @@ section.main > div {
     padding: 1px 7px;
     border-radius: 20px;
     background: #E5E7EB;
-    color: #6B7280;
+    color: #374151;
     margin-left: 6px;
     vertical-align: middle;
     text-transform: uppercase;
@@ -545,11 +630,11 @@ with st.sidebar:
 
     st.markdown("---")
     st.markdown(
-        "<div style='font-size:0.75rem;color:#9CA3AF;'>"
+        "<div style='font-size:0.75rem;color:#374151;'>"
         "<a href='https://github.com/dwnjuguna/supply-chain-health-agent' "
-        "style='color:#9CA3AF;'>GitHub</a> · "
-        "<a href='https://docs.anthropic.com' style='color:#9CA3AF;'>Docs</a> · "
-        "<a href='https://www.anthropic.com/legal/privacy' style='color:#9CA3AF;'>Privacy</a>"
+        "style='color:#374151;'>GitHub</a> · "
+        "<a href='https://docs.anthropic.com' style='color:#374151;'>Docs</a> · "
+        "<a href='https://www.anthropic.com/legal/privacy' style='color:#374151;'>Privacy</a>"
         "</div>",
         unsafe_allow_html=True,
     )
@@ -597,12 +682,27 @@ if persona == "analyst":
     </div>
     """, unsafe_allow_html=True)
 
+    st.markdown("""
+    <div class="sc-consent-wrap">
+        <div class="sc-consent-hint">🔓 Check to unlock financial inputs</div>
+    </div>
+    """, unsafe_allow_html=True)
+
     cba_consent = st.checkbox(
-        "✅ I understand and voluntarily provide financial data. "
-        "I acknowledge outputs are illustrative estimates — not financial advice.",
+        "✅ I understand the privacy notice above and voluntarily choose to enter "
+        "financial data. I acknowledge all outputs are illustrative estimates — "
+        "not professional financial advice.",
         value=st.session_state.cba_consent_given,
     )
     st.session_state.cba_consent_given = cba_consent
+
+    if not cba_consent:
+        st.markdown("""
+        <div style="font-size:0.8rem;color:#374151;padding:6px 0 0 28px;">
+        ☝️ Check the box above to reveal the financial input fields and enable
+        the cost-benefit analysis. You can run the full assessment without them.
+        </div>
+        """, unsafe_allow_html=True)
 
     if cba_consent:
         include_cba = True
@@ -649,7 +749,7 @@ if persona == "analyst":
 elif persona == "executive":
 
     st.markdown("""
-    <p style="font-size:0.95rem;color:#4B5563;line-height:1.65;margin-bottom:1.5rem;">
+    <p style="font-size:0.95rem;color:#1A1A2E;line-height:1.65;margin-bottom:1.5rem;">
     Answer a few questions about your organisation and priorities. Claude will
     search for the latest market intelligence, diagnose your supply chain,
     compare strategic options, and map a phased improvement roadmap — tailored
@@ -693,12 +793,27 @@ elif persona == "executive":
     </div>
     """, unsafe_allow_html=True)
 
+    st.markdown("""
+    <div class="sc-consent-wrap">
+        <div class="sc-consent-hint">🔓 Check to unlock financial inputs</div>
+    </div>
+    """, unsafe_allow_html=True)
+
     exec_cba = st.checkbox(
-        "✅ I understand and voluntarily provide financial context. "
-        "I acknowledge all financial outputs are illustrative estimates only.",
+        "✅ I understand the privacy notice above and voluntarily choose to provide "
+        "financial context. I acknowledge all financial outputs are illustrative "
+        "estimates only — not professional financial advice.",
         value=st.session_state.cba_consent_given,
     )
     st.session_state.cba_consent_given = exec_cba
+
+    if not exec_cba:
+        st.markdown("""
+        <div style="font-size:0.8rem;color:#374151;padding:6px 0 0 28px;">
+        ☝️ Check the box above to reveal financial input fields. You can run
+        the full strategic assessment without providing any financial data.
+        </div>
+        """, unsafe_allow_html=True)
 
     if exec_cba:
         include_cba = True
@@ -1040,12 +1155,12 @@ if st.session_state.assessment_done and st.session_state.result:
 
 st.markdown("---")
 st.markdown(
-    "<center style='font-size:0.75rem;color:#9CA3AF;'>"
+    "<center style='font-size:0.75rem;color:#374151;'>"
     "Built with the Anthropic Claude SDK &nbsp;·&nbsp; "
     "<a href='https://github.com/dwnjuguna/supply-chain-health-agent' "
-    "style='color:#9CA3AF;'>GitHub</a> &nbsp;·&nbsp; MIT License &nbsp;·&nbsp; "
+    "style='color:#374151;'>GitHub</a> &nbsp;·&nbsp; MIT License &nbsp;·&nbsp; "
     "<a href='https://www.anthropic.com/legal/privacy' target='_blank' "
-    "style='color:#9CA3AF;'>Anthropic Privacy Policy</a>"
+    "style='color:#374151;'>Anthropic Privacy Policy</a>"
     "</center>",
     unsafe_allow_html=True,
 )
