@@ -37,6 +37,23 @@ html, body, [class*="css"] {
     font-family: 'Inter', sans-serif;
 }
 
+/* ── Background surfaces ── */
+/* Warm off-white — softer than pure white, easier on the eye over long sessions */
+[data-testid="stAppViewContainer"] {
+    background-color: #F7F6F3;
+}
+section.main > div {
+    background-color: #F7F6F3;
+}
+/* Sidebar gets a faint purple tint to anchor it to the brand */
+[data-testid="stSidebar"] {
+    background-color: #F0EFF9;
+}
+/* Keep content blocks white so they lift off the background */
+.sc-box, .sc-privacy, .sc-coming-soon {
+    background-color: #FFFFFF;
+}
+
 /* ── Header ── */
 .sc-header {
     background: #1E1A4E;
