@@ -331,11 +331,37 @@ if st.session_state.assessment_done and st.session_state.result:
     st.caption("Ask Claude anything about your results — drill into any domain, get board summaries, action plans, and more.")
 
     # Chat history display
+    def render_chat_markdown(text: str) -> str:
+        """Convert markdown to HTML for chat bubbles."""
+        import re
+        # Bold
+        text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
+        # Italic
+        text = re.sub(r'\*(.+?)\*', r'<em>\1</em>', text)
+        # Headers ## and ###
+        text = re.sub(r'#{2,3}\s+(.+)', r'<br><strong>\1</strong>', text)
+        # Numbered lists
+        text = re.sub(r'^(\d+\.\s)', r'<br>\1', text, flags=re.MULTILINE)
+        # Bullet points
+        text = re.sub(r'^[-•]\s', r'<br>• ', text, flags=re.MULTILINE)
+        # Line breaks
+        text = text.replace(chr(10), "<br>")
+        # Clean up excessive breaks
+        text = re.sub(r'(<br>){3,}', '<br><br>', text)
+        return text.strip("<br>")
+
     for msg in st.session_state.chat_history:
+        rendered = render_chat_markdown(msg["content"])
         if msg["role"] == "user":
-            st.markdown(f'<div class="chat-user">🧑 {msg["content"]}</div>', unsafe_allow_html=True)
+            st.markdown(
+                f'<div class="chat-user">🧑&nbsp; {rendered}</div>',
+                unsafe_allow_html=True
+            )
         else:
-            st.markdown(f'<div class="chat-agent">🤖 {msg["content"]}</div>', unsafe_allow_html=True)
+            st.markdown(
+                f'<div class="chat-agent">🤖&nbsp; {rendered}</div>',
+                unsafe_allow_html=True
+            )
 
     # Suggested questions
     suggestions = [
