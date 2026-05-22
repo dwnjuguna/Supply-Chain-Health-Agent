@@ -5,3 +5,6 @@ __pycache__/
 backup_before_fixes/
 sc_memory.db
 *.db
+SC_Health_Agent_Pricing_CONFIDENTIAL.pdf
+create_pricing_pdf.py
+*CONFIDENTIAL*
