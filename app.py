@@ -225,9 +225,8 @@ if st.session_state.assessment_done and st.session_state.result:
     overall = scores_data.get("overall", "N/A")
 
     st.markdown("---")
-    st.markdown('<div class="section-header">📈 Domain Health Scores</div>', unsafe_allow_html=True)
 
-    # Overall score
+    # ── Overall score header (always visible above tabs) ───────────────────────
     rating, desc = interpret_score(int(overall)) if isinstance(overall, (int, float)) else ("N/A", "")
     col_ov, col_sp = st.columns([1, 3])
     with col_ov:
@@ -247,90 +246,149 @@ if st.session_state.assessment_done and st.session_state.result:
                 st.markdown(f"**{domain.capitalize()}** — {score}/100 &nbsp; `{r}`")
                 st.progress(score / 100)
 
-    # Narrative sections
-    narrative = result.get("narrative", "")
-    if narrative:
-        sections = {
-            "EXECUTIVE SUMMARY": ("📋 Executive Summary", "info"),
-            "TOP RISKS": ("⚠️ Top Risks", "error"),
-            "DOMAIN HIGHLIGHTS": ("🏷️ Domain Highlights", "success"),
-            "PRIORITY RECOMMENDATIONS": ("✅ Priority Recommendations", "success"),
-        }
+    st.markdown("<br>", unsafe_allow_html=True)
 
-        current_section = None
-        section_text = {}
-        lines = narrative.split("\n")
-        for line in lines:
-            matched = False
-            for key in sections:
-                if key in line.upper():
-                    current_section = key
-                    section_text[key] = []
-                    matched = True
-                    break
-            if not matched and current_section:
-                section_text[current_section].append(line)
+    # ── Tabs ──────────────────────────────────────────────────────────────────
+    tab1, tab2, tab3, tab4 = st.tabs([
+        "📋 Diagnostic Report",
+        "🏷️ Domain Deep-Dive",
+        "📥 Export",
+        "💬 Q&A",
+    ])
 
-        def render_markdown_content(text: str) -> str:
-            """Convert markdown to HTML for rendering inside styled divs."""
-            import re
-            # Bold: **text** -> <strong>text</strong>
-            text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
-            # Italic: *text* -> <em>text</em>
-            text = re.sub(r'\*(.+?)\*', r'<em>\1</em>', text)
-            # Numbered list items
-            text = re.sub(r'^(\d+\.\s)', r'<br>\1', text, flags=re.MULTILINE)
-            # Bullet points
-            text = re.sub(r'^[-•]\s', r'<br>• ', text, flags=re.MULTILINE)
-            # Line breaks
-            text = text.replace(chr(10), "<br>")
-            # Clean up multiple consecutive breaks
-            text = re.sub(r'(<br>){3,}', '<br><br>', text)
-            return text.strip("<br>")
+    # ── TAB 1: Diagnostic Report ───────────────────────────────────────────────
+    with tab1:
+        narrative = result.get("narrative", "")
+        if narrative:
+            sections = {
+                "EXECUTIVE SUMMARY":        ("📋 Executive Summary",         "info"),
+                "TOP RISKS":                ("⚠️ Top Risks",                  "error"),
+                "PRIORITY RECOMMENDATIONS": ("✅ Priority Recommendations",   "success"),
+            }
 
-        for key, (title, _) in sections.items():
-            if key in section_text:
-                content = "\n".join(section_text[key]).strip()
-                if content:
-                    st.markdown(f'<div class="section-header">{title}</div>', unsafe_allow_html=True)
-                    rendered = render_markdown_content(content)
-                    if key == "TOP RISKS":
-                        st.markdown(f'<div class="risk-box">{rendered}</div>', unsafe_allow_html=True)
-                    elif key == "PRIORITY RECOMMENDATIONS":
-                        st.markdown(f'<div class="rec-box">{rendered}</div>', unsafe_allow_html=True)
-                    else:
+            current_section = None
+            section_text = {}
+            for line in narrative.split("\n"):
+                matched = False
+                for key in sections:
+                    if key in line.upper():
+                        current_section = key
+                        section_text[key] = []
+                        matched = True
+                        break
+                if not matched and current_section:
+                    section_text[current_section].append(line)
+
+            def render_markdown_content(text: str) -> str:
+                import re
+                text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
+                text = re.sub(r'\*(.+?)\*', r'<em>\1</em>', text)
+                text = re.sub(r'^(\d+\.\s)', r'<br>\1', text, flags=re.MULTILINE)
+                text = re.sub(r'^[-•]\s', r'<br>• ', text, flags=re.MULTILINE)
+                text = text.replace(chr(10), "<br>")
+                text = re.sub(r'(<br>){3,}', '<br><br>', text)
+                return text.strip("<br>")
+
+            for key, (title, _) in sections.items():
+                if key in section_text:
+                    content = "\n".join(section_text[key]).strip()
+                    if content:
+                        st.markdown(f'<div class="section-header">{title}</div>', unsafe_allow_html=True)
+                        rendered = render_markdown_content(content)
+                        if key == "TOP RISKS":
+                            st.markdown(f'<div class="risk-box">{rendered}</div>', unsafe_allow_html=True)
+                        elif key == "PRIORITY RECOMMENDATIONS":
+                            st.markdown(f'<div class="rec-box">{rendered}</div>', unsafe_allow_html=True)
+                        else:
+                            st.markdown(content)
+        else:
+            st.info("Run an assessment to see the diagnostic report.")
+
+    # ── TAB 2: Domain Deep-Dive ────────────────────────────────────────────────
+    with tab2:
+        narrative = result.get("narrative", "")
+        if narrative:
+            domain_sections = {
+                "DOMAIN HIGHLIGHTS": ("🏷️ Domain Highlights", "info"),
+            }
+            current_section = None
+            section_text2 = {}
+            for line in narrative.split("\n"):
+                matched = False
+                for key in domain_sections:
+                    if key in line.upper():
+                        current_section = key
+                        section_text2[key] = []
+                        matched = True
+                        break
+                if not matched and current_section:
+                    section_text2[current_section].append(line)
+
+            for key, (title, _) in domain_sections.items():
+                if key in section_text2:
+                    content = "\n".join(section_text2[key]).strip()
+                    if content:
+                        st.markdown(f'<div class="section-header">{title}</div>', unsafe_allow_html=True)
                         st.markdown(content)
 
-    # ── Download Report ───────────────────────────────────────────────────────
-    st.markdown("---")
-    st.markdown('<div class="section-header">📥 Download Report</div>', unsafe_allow_html=True)
-    st.caption("Download your full assessment as a professional PDF report.")
-    try:
-        from export import generate_pdf
-        vertical_val = vertical if "vertical" in dir() else "general"
-        persona_val  = st.session_state.agent.persona if st.session_state.agent else "analyst"
-        pdf_bytes = generate_pdf(
-            result,
-            vertical=vertical_val,
-            persona=persona_val,
-        )
-        from datetime import datetime
-        filename = f"supply_chain_report_{vertical_val}_{datetime.now().strftime('%Y%m%d')}.pdf"
-        st.download_button(
-            label="📄 Download PDF Report",
-            data=pdf_bytes,
-            file_name=filename,
-            mime="application/pdf",
-            use_container_width=True,
-            type="primary",
-        )
-    except Exception as e:
-        st.warning(f"PDF export unavailable: {e}")
+            # Domain score cards
+            st.markdown('<div class="section-header">📊 Domain Score Cards</div>', unsafe_allow_html=True)
+            if domain_scores:
+                col_a, col_b = st.columns(2)
+                for i, (domain, score) in enumerate(domain_scores.items()):
+                    score = max(0, min(100, int(score)))
+                    r, desc_d = interpret_score(score)
+                    color = "#1D9E75" if score >= 80 else "#3B8BD4" if score >= 60 else "#BA7517" if score >= 40 else "#E24B4A"
+                    with col_a if i % 2 == 0 else col_b:
+                        st.markdown(f"""
+                        <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-left:4px solid {color};
+                        border-radius:8px;padding:1rem;margin:0.5rem 0;">
+                            <div style="font-weight:600;font-size:0.9rem;color:#1A1A2E;">
+                                {domain.replace("_"," ").title()}
+                            </div>
+                            <div style="font-size:1.8rem;font-weight:700;color:{color};">{score}</div>
+                            <div style="font-size:0.75rem;color:#6B7280;">{r} — {desc_d}</div>
+                        </div>
+                        """, unsafe_allow_html=True)
+        else:
+            st.info("Run an assessment to see domain highlights.")
 
-    # ── Follow-up Q&A ──────────────────────────────────────────────────────────
-    st.markdown("---")
-    st.markdown('<div class="section-header">💬 Follow-up Q&A</div>', unsafe_allow_html=True)
-    st.caption("Ask Claude anything about your results — drill into any domain, get board summaries, action plans, and more.")
+    # ── TAB 3: Export ──────────────────────────────────────────────────────────
+    with tab3:
+        st.markdown('<div class="section-header">📥 Download Report</div>', unsafe_allow_html=True)
+        st.caption("Download your full assessment as a professional PDF report.")
+        try:
+            from export import generate_pdf
+            vertical_val = vertical if "vertical" in dir() else "general"
+            persona_val  = st.session_state.agent.persona if st.session_state.agent else "analyst"
+            pdf_bytes = generate_pdf(
+                result,
+                vertical=vertical_val,
+                persona=persona_val,
+            )
+            from datetime import datetime
+            filename = f"supply_chain_report_{vertical_val}_{datetime.now().strftime('%Y%m%d')}.pdf"
+            st.download_button(
+                label="📄 Download PDF Report",
+                data=pdf_bytes,
+                file_name=filename,
+                mime="application/pdf",
+                use_container_width=True,
+                type="primary",
+            )
+            st.markdown("<br>", unsafe_allow_html=True)
+            st.info(
+                "💡 Your PDF includes the overall score, all domain scores, "
+                "executive summary, top risks, domain highlights, and priority "
+                "recommendations — ready to share with your team or board."
+            )
+        except Exception as e:
+            st.warning(f"PDF export unavailable: {e}")
+
+    # ── TAB 4: Q&A ────────────────────────────────────────────────────────────
+    with tab4:
+        st.markdown('<div class="section-header">💬 Follow-up Q&A</div>', unsafe_allow_html=True)
+        st.caption("Ask Claude anything about your results — drill into any domain, get board summaries, action plans, and more.")
 
     # Chat history display
     def render_chat_markdown(text: str) -> str:
