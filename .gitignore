@@ -3,3 +3,5 @@ __pycache__/
 *.pyo
 .env
 backup_before_fixes/
+sc_memory.db
+*.db
