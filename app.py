@@ -281,8 +281,11 @@ if st.session_state.assessment_done and st.session_state.result:
 
             def render_markdown_content(text: str) -> str:
                 import re
-                # Fix broken strong> tags from web search citations
-                text = re.sub(r'(?<![<\/a-z])strong>', '<strong>', text)
+                # Aggressively fix ALL broken strong> tags first
+                text = re.sub(r'(?<!<)(?<!</)(?<!<[a-z])strong>', '<strong>', text)
+                text = text.replace("\nstrong>", "\n<strong>")
+                text = text.replace(" strong>", " <strong>")
+                text = text.replace("\nStrong>", "\n<strong>")
                 # Bold
                 text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
                 # Italic
@@ -295,8 +298,8 @@ if st.session_state.assessment_done and st.session_state.result:
                 text = text.replace(chr(10), "<br>")
                 # Clean up excessive breaks
                 text = re.sub(r'(<br>){3,}', '<br><br>', text)
-                # Final strong tag cleanup
-                text = re.sub(r'(?<![<\/a-z])strong>', '<strong>', text)
+                # Final pass — catch any remaining broken tags
+                text = re.sub(r'(?<!<)(?<!/)(strong>)', '<strong>', text)
                 return text.strip("<br>")
 
             for key, (title, _) in sections.items():
