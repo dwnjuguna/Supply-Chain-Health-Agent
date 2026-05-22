@@ -341,8 +341,14 @@ if st.session_state.assessment_done and st.session_state.result:
                 domain_content = re.sub(r'(?<![<\/a-z])strong>', '<strong>', domain_content)
                 # Bold
                 domain_content = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', domain_content)
+                # Line breaks
+                domain_content = domain_content.replace(chr(10), "<br>")
+                domain_content = re.sub(r'(<br>){3,}', '<br><br>', domain_content)
                 st.markdown('<div class="section-header">🏷️ Domain Highlights</div>', unsafe_allow_html=True)
-                st.markdown(domain_content)
+                st.markdown(
+                    f'<div style="font-size:0.9rem;line-height:1.7;color:#1A1A2E;">{domain_content}</div>',
+                    unsafe_allow_html=True
+                )
 
             # Domain score cards — 2 column grid
             st.markdown('<div class="section-header">📊 Domain Score Cards</div>', unsafe_allow_html=True)
