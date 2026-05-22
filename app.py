@@ -347,17 +347,28 @@ if st.session_state.assessment_done and st.session_state.result:
                     r'<br><br><strong>\1</strong>',
                     domain_content
                 )
-                # Pattern 2: Match known domain keywords explicitly
-                domain_keywords = (
-                    r'(?:Demand|Procurement|Sourcing|Manufacturing|Production|'
-                    r'Inventory|Logistics|Transportation|Warehousing|Fulfillment|'
-                    r'Risk|Resilience|Sustainability|ESG)'
-                )
-                domain_content = re.sub(
-                    r'((?:' + domain_keywords[1:-1] + r')[\w\s&,/]*?\((?:Score:\s*)?\d+(?:\/100)?[^)]{0,40}\))',
-                    r'<br><br><strong>\1</strong>',
-                    domain_content
-                )
+                # Add paragraph breaks before known domain section headers
+                # Simple line-by-line approach — no complex regex
+                DOMAIN_KEYWORDS = [
+                    "Demand", "Procurement", "Sourcing", "Manufacturing",
+                    "Production", "Inventory", "Logistics", "Transportation",
+                    "Warehousing", "Fulfillment", "Risk", "Resilience",
+                    "Sustainability", "ESG"
+                ]
+                processed_lines = []
+                for line in domain_content.split(chr(10)):
+                    stripped = line.strip()
+                    # Check if line starts with a known domain keyword and contains a score
+                    is_header = (
+                        any(stripped.startswith(kw) for kw in DOMAIN_KEYWORDS)
+                        and ("/" in stripped or "Score" in stripped or "/100" in stripped
+                             or any(f"({n}" in stripped for n in range(0,101)))
+                    )
+                    if is_header:
+                        processed_lines.append(f'<br><br><strong>{stripped}</strong>')
+                    else:
+                        processed_lines.append(stripped)
+                domain_content = chr(10).join(processed_lines)
                 # Line breaks
                 domain_content = domain_content.replace(chr(10), "<br>")
                 domain_content = re.sub(r'(<br>){3,}', '<br><br>', domain_content)
