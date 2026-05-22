@@ -349,8 +349,9 @@ if st.session_state.assessment_done and st.session_state.result:
                     domain_content
                 )
                 # Pattern 2: Unbolded "Title (Score: XX - Rating)" or "Title (XX/100 - Rating)"
+                # Require at least 4 chars before opening paren to avoid single letter matches
                 domain_content = re.sub(
-                    r'(?<![>\*])([A-Z][\w\s&]+?\((?:Score:\s*)?\d+(?:\/100)?[^)]{0,30}\))',
+                    r'(?<![>\*])([A-Z][\w\s&]{3,}?\((?:Score:\s*)?\d+(?:\/100)?[^)]{0,30}\))',
                     r'<br><br><strong>\1</strong>',
                     domain_content
                 )
