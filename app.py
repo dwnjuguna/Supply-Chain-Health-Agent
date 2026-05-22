@@ -168,11 +168,49 @@ if run_clicked:
     st.session_state.chat_history = []
     st.session_state.assessment_done = False
 
-    with st.spinner("🔍 Claude is analyzing your supply chain..."):
+    # ── Multi-step loading experience ─────────────────────────────────────────
+    progress_bar     = st.progress(0)
+    status_container = st.empty()
+
+    def update_status(message: str, pct: int):
+        progress_bar.progress(pct)
+        status_container.markdown(
+            f'<div style="background:#EEF0FF;border:1px solid #CECBF6;border-radius:10px;"
+            f"padding:0.75rem 1rem;font-size:0.875rem;color:#1A1A2E;">{message}</div>',
+            unsafe_allow_html=True,
+        )
+
+    update_status("🔍 Initializing assessment engine...", 5)
+    import time; time.sleep(0.4)
+
+    update_status("🌐 Searching for latest industry benchmarks and market data...", 20)
+    import time; time.sleep(0.3)
+
+    update_status(f"🏭 Analyzing supply chain health for {vertical.upper()} vertical...", 40)
+
+    try:
         if mode == "custom" and custom_inputs:
             result = st.session_state.agent.run_custom_assessment(custom_inputs)
         else:
             result = st.session_state.agent.run_general_assessment()
+    except Exception as e:
+        progress_bar.empty()
+        status_container.empty()
+        st.error(f"**Assessment failed:** {e}")
+        st.stop()
+
+    update_status("📊 Scoring domains against world-class benchmarks...", 70)
+    import time; time.sleep(0.3)
+
+    update_status("✍️ Generating executive summary and recommendations...", 85)
+    import time; time.sleep(0.3)
+
+    update_status("📄 Preparing your report...", 95)
+    import time; time.sleep(0.2)
+
+    progress_bar.progress(100)
+    status_container.empty()
+    progress_bar.empty()
 
     st.session_state.result = result
     st.session_state.assessment_done = True
@@ -294,7 +332,7 @@ if st.session_state.assessment_done and st.session_state.result:
     for i, suggestion in enumerate(suggestions):
         with cols[i % 2]:
             if st.button(suggestion, key=f"sugg_{i}", use_container_width=True):
-                with st.spinner("Claude is thinking..."):
+                with st.spinner(f"🤖 Analyzing: {suggestion[:40]}..."):
                     reply = st.session_state.agent.ask_followup(
                         suggestion,
                         history=st.session_state.chat_history,
@@ -306,7 +344,7 @@ if st.session_state.assessment_done and st.session_state.result:
     # Free-text input
     user_q = st.chat_input("Ask a follow-up question about your supply chain health...")
     if user_q:
-        with st.spinner("Claude is thinking..."):
+        with st.spinner("🤖 Claude is researching your question..."):
             reply = st.session_state.agent.ask_followup(
                 user_q,
                 history=st.session_state.chat_history,
