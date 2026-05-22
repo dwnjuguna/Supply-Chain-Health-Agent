@@ -236,6 +236,32 @@ if st.session_state.assessment_done and st.session_state.result:
                     else:
                         st.markdown(content)
 
+    # ── Download Report ───────────────────────────────────────────────────────
+    st.markdown("---")
+    st.markdown('<div class="section-header">📥 Download Report</div>', unsafe_allow_html=True)
+    st.caption("Download your full assessment as a professional PDF report.")
+    try:
+        from export import generate_pdf
+        vertical_val = vertical if "vertical" in dir() else "general"
+        persona_val  = st.session_state.agent.persona if st.session_state.agent else "analyst"
+        pdf_bytes = generate_pdf(
+            result,
+            vertical=vertical_val,
+            persona=persona_val,
+        )
+        from datetime import datetime
+        filename = f"supply_chain_report_{vertical_val}_{datetime.now().strftime('%Y%m%d')}.pdf"
+        st.download_button(
+            label="📄 Download PDF Report",
+            data=pdf_bytes,
+            file_name=filename,
+            mime="application/pdf",
+            use_container_width=True,
+            type="primary",
+        )
+    except Exception as e:
+        st.warning(f"PDF export unavailable: {e}")
+
     # ── Follow-up Q&A ──────────────────────────────────────────────────────────
     st.markdown("---")
     st.markdown('<div class="section-header">💬 Follow-up Q&A</div>', unsafe_allow_html=True)
