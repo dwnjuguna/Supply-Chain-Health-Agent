@@ -7,6 +7,7 @@ from agent import SupplyChainHealthAgent
 from scoring import interpret_score
 from domains import DOMAINS
 from verticals import VERTICAL_PRESETS
+from personas import PERSONAS, EXECUTIVE_CONTEXT_QUESTIONS, EXECUTIVE_CUSTOMISATION_OPTIONS
 
 # ── Page config ───────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -55,6 +56,26 @@ st.markdown("""
     .chat-agent ul, .chat-user ul { margin: 4px 0 4px 16px; padding: 0; }
     .chat-agent li, .chat-user li { margin: 2px 0; }
     div[data-testid="stProgress"] > div { background: #534AB7 !important; }
+    .persona-card {
+        background: #FFFFFF; border: 2px solid #E5E7EB;
+        border-radius: 16px; padding: 1.75rem 1.5rem 1.5rem;
+        text-align: center; height: 100%;
+        transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .persona-card:hover { border-color: #534AB7; box-shadow: 0 6px 24px rgba(83,74,183,0.12); }
+    .persona-card.exec:hover { border-color: #0F6E56; box-shadow: 0 6px 24px rgba(15,110,86,0.12); }
+    .persona-card.consultant:hover { border-color: #E8A020; box-shadow: 0 6px 24px rgba(232,160,32,0.12); }
+    .persona-card.disabled { opacity: 0.4; pointer-events: none; }
+    .persona-icon-wrap {
+        width: 56px; height: 56px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 auto 14px; font-size: 1.5rem;
+    }
+    .persona-badge {
+        display: inline-block; border-radius: 20px; padding: 3px 12px;
+        font-size: 0.7rem; font-weight: 600; letter-spacing: 0.3px;
+        color: #FFFFFF; text-transform: uppercase;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -67,6 +88,8 @@ if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 if "assessment_done" not in st.session_state:
     st.session_state.assessment_done = False
+if "persona" not in st.session_state:
+    st.session_state.persona = None
 
 # ── Header ────────────────────────────────────────────────────────────────────
 st.markdown("""
@@ -76,6 +99,118 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+# ── PERSONA LANDING SCREEN ────────────────────────────────────────────────────
+if st.session_state.persona is None:
+    st.markdown("## Who are you?")
+    st.markdown(
+        "Select your profile — the tool tailors the entire experience "
+        "to your needs, from inputs to outputs."
+    )
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    col1, col2, col3, col4, col5 = st.columns(5, gap="large")
+
+    with col1:
+        st.markdown("""
+        <div class="persona-card">
+            <div class="persona-icon-wrap" style="background:#EEEDFE;">📊</div>
+            <div style="font-weight:600;font-size:0.9rem;color:#1A1A2E;margin-bottom:8px;">
+                SC Manager / Analyst
+            </div>
+            <div style="font-size:0.8rem;color:#374151;line-height:1.55;margin-bottom:16px;">
+                Deep KPI diagnostics, benchmark comparisons, domain inputs,
+                and cost-benefit analysis.
+            </div>
+            <span class="persona-badge" style="background:#534AB7;">Practitioner</span>
+        </div>
+        """, unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("Select — Analyst", key="btn_analyst",
+                     use_container_width=True, type="primary"):
+            st.session_state.persona = "analyst"
+            st.rerun()
+
+    with col2:
+        st.markdown("""
+        <div class="persona-card exec">
+            <div class="persona-icon-wrap" style="background:#E1F5EE;">🏢</div>
+            <div style="font-weight:600;font-size:0.9rem;color:#1A1A2E;margin-bottom:8px;">
+                CSCO / COO / VP SC
+            </div>
+            <div style="font-size:0.8rem;color:#374151;line-height:1.55;margin-bottom:16px;">
+                Strategic scenarios, maturity roadmap, and board-ready
+                summaries for investment decisions.
+            </div>
+            <span class="persona-badge" style="background:#0F6E56;">Executive</span>
+        </div>
+        """, unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("Select — Executive", key="btn_exec",
+                     use_container_width=True, type="primary"):
+            st.session_state.persona = "executive"
+            st.rerun()
+
+    with col3:
+        st.markdown("""
+        <div class="persona-card consultant">
+            <div class="persona-icon-wrap" style="background:#FEF3C7;">🎯</div>
+            <div style="font-weight:600;font-size:0.9rem;color:#1A1A2E;margin-bottom:8px;">
+                SC Consultant
+            </div>
+            <div style="font-size:0.8rem;color:#374151;line-height:1.55;margin-bottom:16px;">
+                Multi-client diagnostics, white-label reports, and
+                client intake forms for advisory practices.
+            </div>
+            <span class="persona-badge" style="background:#E8A020;">Consultant</span>
+        </div>
+        """, unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("Select — Consultant", key="btn_consultant",
+                     use_container_width=True, type="primary"):
+            st.session_state.persona = "consultant"
+            st.rerun()
+
+    with col4:
+        st.markdown("""
+        <div class="persona-card disabled">
+            <div class="persona-icon-wrap" style="background:#F1EFE8;">⚙️</div>
+            <div style="font-weight:600;font-size:0.9rem;color:#1A1A2E;margin-bottom:8px;">
+                Enterprise Config
+            </div>
+            <div style="font-size:0.8rem;color:#374151;line-height:1.55;margin-bottom:16px;">
+                Embed with custom branding, SSO, API access,
+                and compliance controls.
+            </div>
+            <span class="persona-badge" style="background:#9CA3AF;">Phase 2</span>
+        </div>
+        """, unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.button("Coming Soon", key="btn_enterprise",
+                  use_container_width=True, disabled=True)
+
+    with col5:
+        st.markdown("""
+        <div class="persona-card disabled">
+            <div class="persona-icon-wrap" style="background:#FEF2F2;">🏛️</div>
+            <div style="font-weight:600;font-size:0.9rem;color:#1A1A2E;margin-bottom:8px;">
+                Government / Federal
+            </div>
+            <div style="font-size:0.8rem;color:#374151;line-height:1.55;margin-bottom:16px;">
+                FedRAMP, air-gap, GovCloud, and classified
+                deployment for federal agencies.
+            </div>
+            <span class="persona-badge" style="background:#9CA3AF;">Phase 3</span>
+        </div>
+        """, unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.button("Register Interest", key="btn_gov",
+                  use_container_width=True, disabled=True)
+
+    st.stop()
+
+# ── PERSONA CONFIRMED — show Switch button in sidebar ─────────────────────────
+persona = st.session_state.persona
+
 # Domain pills
 domains_html = "".join(f'<span class="domain-pill">{d["label"]}</span>' for d in DOMAINS)
 st.markdown(domains_html, unsafe_allow_html=True)
@@ -83,6 +218,29 @@ st.markdown("<br>", unsafe_allow_html=True)
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
+    # Persona badge
+    p_icon  = {"analyst": "📊", "executive": "🏢", "consultant": "🎯"}.get(persona, "📊")
+    p_label = {"analyst": "Practitioner", "executive": "Executive", "consultant": "Consultant"}.get(persona, "Practitioner")
+    p_color = {"analyst": "#534AB7", "executive": "#0F6E56", "consultant": "#E8A020"}.get(persona, "#534AB7")
+    st.markdown(
+        f"<div style='display:flex;align-items:center;gap:8px;margin-bottom:8px;'>"
+        f"<span style='font-size:1.2rem;'>{p_icon}</span>"
+        f"<span style='font-weight:600;font-size:0.9rem;'>{p_label} Track</span>"
+        f"</div>"
+        f"<span style='display:inline-block;background:{p_color};color:#fff;"
+        f"font-size:0.65rem;font-weight:600;padding:2px 9px;border-radius:20px;"
+        f"text-transform:uppercase;letter-spacing:0.4px;margin-bottom:12px;'>"
+        f"{p_label}</span>",
+        unsafe_allow_html=True,
+    )
+    if st.button("← Switch Profile", use_container_width=True):
+        st.session_state.persona          = None
+        st.session_state.agent            = None
+        st.session_state.result           = None
+        st.session_state.chat_history     = []
+        st.session_state.assessment_done  = False
+        st.rerun()
+    st.markdown("---")
     st.markdown("### ⚙️ Configuration")
 
     vertical_labels = {
@@ -163,7 +321,7 @@ with col_btn2:
 if run_clicked:
     st.session_state.agent = SupplyChainHealthAgent(
         vertical=vertical,
-        persona="analyst",
+        persona=st.session_state.persona or "analyst",
         include_cba=False,
         enable_web_search=True,
     )
