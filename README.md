@@ -129,10 +129,18 @@ This is not just a chatbot. Claude takes autonomous multi-step actions during ev
 | **Agentic Q&A** | Follow-up questions can trigger live web searches for current data |
 
 ### Phase 2 — Built ✅
-- 🧠 **Cross-session memory** — Claude remembers your org and tracks KPI trends over time
-- 🔔 **Proactive risk alerts** — Claude monitors your vertical and flags risks before you ask
-- 🔗 **Workflow integrations** — push to Slack, create Jira tickets, draft emails from results
-- 🏢 **Enterprise configuration** — admin panel for IT teams with custom branding and access controls
+- 🧠 **Cross-session memory** — SQLite engine tracking org profiles, assessment history, KPI trends
+- 🔔 **Proactive risk alerts** — Claude + web search scans for live risks, delivers via Slack and email
+- 🔗 **Slack integration** — push full assessments, action plans, and risk watch lists to channels
+- 🎫 **Jira integration** — parse 90-day action plan and create tracked tickets automatically
+- 📧 **Email dispatcher** — branded HTML email reports with domain scores and risk alerts
+- 🚦 **Feature flags** — 60+ features gated across 6 tiers without pricing in code
+
+### Phase 3 Roadmap *(Coming)*
+- 📋 **Intake forms** — 5-persona tailored client intake forms
+- 🔌 **MCP server** — call assessments from Claude, ChatGPT, or any MCP-compatible agent
+- 💳 **Stripe paywall** — hosted Pro and Team tier access
+- 🏛️ **Government edition** — FedRAMP, air-gap, GovCloud infrastructure
 
 ---
 
