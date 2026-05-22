@@ -281,25 +281,21 @@ if st.session_state.assessment_done and st.session_state.result:
 
             def render_markdown_content(text: str) -> str:
                 import re
-                # Aggressively fix ALL broken strong> tags first
-                text = re.sub(r'(?<!<)(?<!</)(?<!<[a-z])strong>', '<strong>', text)
-                text = text.replace("\nstrong>", "\n<strong>")
-                text = text.replace(" strong>", " <strong>")
-                text = text.replace("\nStrong>", "\n<strong>")
-                # Bold
+                # Step 1: Fix broken strong> tags — all possible positions
+                text = text.replace("strong>", "<strong>")
+                text = text.replace("<<strong>", "<strong>")  # fix double << if already had <
+                # Step 2: Bold **text**
                 text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
-                # Italic
+                # Step 3: Italic *text*
                 text = re.sub(r'\*(.+?)\*', r'<em>\1</em>', text)
-                # Numbered list items
+                # Step 4: Numbered list items
                 text = re.sub(r'^(\d+\.\s)', r'<br>\1', text, flags=re.MULTILINE)
-                # Bullet points
+                # Step 5: Bullet points
                 text = re.sub(r'^[-•]\s', r'<br>• ', text, flags=re.MULTILINE)
-                # Line breaks
+                # Step 6: Line breaks
                 text = text.replace(chr(10), "<br>")
-                # Clean up excessive breaks
+                # Step 7: Clean up excessive breaks
                 text = re.sub(r'(<br>){3,}', '<br><br>', text)
-                # Final pass — catch any remaining broken tags
-                text = re.sub(r'(?<!<)(?<!/)(strong>)', '<strong>', text)
                 return text.strip("<br>")
 
             for key, (title, _) in sections.items():
@@ -351,10 +347,14 @@ if st.session_state.assessment_done and st.session_state.result:
                     r'<br><br><strong>\1</strong>',
                     domain_content
                 )
-                # Pattern 2: Unbolded "Title (Score: XX - Rating)" or "Title (XX/100 - Rating)"
-                # Require at least 4 chars before opening paren to avoid single letter matches
+                # Pattern 2: Match known domain keywords explicitly
+                domain_keywords = (
+                    r'(?:Demand|Procurement|Sourcing|Manufacturing|Production|'
+                    r'Inventory|Logistics|Transportation|Warehousing|Fulfillment|'
+                    r'Risk|Resilience|Sustainability|ESG)'
+                )
                 domain_content = re.sub(
-                    r'(?<![>\*])([A-Z][\w\s&]{3,}?\((?:Score:\s*)?\d+(?:\/100)?[^)]{0,30}\))',
+                    r'((?:' + domain_keywords[1:-1] + r')[\w\s&,/]*?\((?:Score:\s*)?\d+(?:\/100)?[^)]{0,40}\))',
                     r'<br><br><strong>\1</strong>',
                     domain_content
                 )
