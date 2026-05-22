@@ -6,13 +6,30 @@ from scoring import parse_scores
 
 load_dotenv()
 
-client = anthropic.Anthropic()
-
 class SupplyChainHealthAgent:
-    def __init__(self, vertical: str = "general"):
-        self.vertical = vertical
-        self.chat_history = []
-        self.system_prompt = build_system_prompt(vertical)
+    def __init__(
+        self,
+        vertical: str = "general",
+        persona: str = "analyst",
+        include_cba: bool = False,
+        enable_web_search: bool = True,
+        customisation: dict = None,
+    ):
+        self.vertical          = vertical
+        self.persona           = persona
+        self.include_cba       = include_cba
+        self.enable_web_search = enable_web_search
+        self.customisation     = customisation or {}
+        self.chat_history      = []
+        self.system_prompt     = build_system_prompt(vertical)
+
+        api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+        try:
+            import streamlit as st
+            api_key = st.secrets.get("ANTHROPIC_API_KEY", api_key)
+        except Exception:
+            pass
+        self.client = anthropic.Anthropic(api_key=api_key)
 
     def run_general_assessment(self) -> dict:
         """Run a general industry-benchmark health check."""
