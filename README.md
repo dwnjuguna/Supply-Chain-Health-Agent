@@ -19,17 +19,18 @@ Open any browser, select your profile, and get a full supply chain assessment in
 
 ---
 
-## ✨ What's New in v3.0
+## ✨ What's New in v4.0
 
-| Feature | v2.0 | v3.0 |
+| Feature | v3.0 | v4.0 |
 |---|---|---|
-| Results layout | Single scrolling page | **4-tab structured UI** |
-| Domain analysis | Inline narrative | **Dedicated Domain Deep-Dive tab** |
-| Report export | Not available | **Professional PDF export** |
-| Loading experience | Single spinner | **Multi-step progress bar** |
-| Industry verticals | 8 verticals | **11 verticals** |
-| Q&A context | Generic responses | **Assessment-aware — references your scores** |
-| Markdown rendering | Raw text | **Full bold, bullets, headers** |
+| Persona selection | Single experience | **5-persona landing screen** |
+| User tracks | Analyst only | **Analyst, Executive, Consultant + 2 Coming Soon** |
+| Phase 2 built | Not available | **SQLite memory, risk monitor, Slack, Jira, email** |
+| Cross-session memory | Not available | **SQLite memory engine** |
+| Proactive alerts | Not available | **Claude-powered risk monitor** |
+| Slack integration | Not available | **Assessment push + risk alerts** |
+| Jira integration | Not available | **Action plan to tickets** |
+| Feature flags | Not available | **60+ features across 6 tiers** |
 
 ---
 
@@ -55,6 +56,20 @@ The Supply Chain Health Agent uses Claude AI to evaluate your supply chain acros
   OVERALL SCORE                             69/100
 =======================================================
 ```
+
+---
+
+## 👤 5 User Personas
+
+Select your profile at the landing screen — the tool adapts the entire experience from that single choice.
+
+| Persona | Track | What You Get |
+|---|---|---|
+| **📊 SC Manager / Analyst** | Practitioner | Deep KPI diagnostics, domain inputs, benchmarks, cost-benefit analysis |
+| **🏢 CSCO / COO / VP SC** | Executive | Strategic scenarios, 36-month roadmap, board-ready summaries |
+| **🎯 SC Consultant** | Consultant | Multi-client diagnostics, white-label reports, client intake forms |
+| **⚙️ Enterprise Config** | Phase 2 | SSO, API access, custom branding, audit logs, on-premise |
+| **🏛️ Government / Federal** | Phase 3 | FedRAMP, air-gap, GovCloud, classified deployment |
 
 ---
 
@@ -113,7 +128,7 @@ This is not just a chatbot. Claude takes autonomous multi-step actions during ev
 | **Market Intelligence** | Dedicated parallel search surfaces the 5 most important supply chain signals for your vertical right now |
 | **Agentic Q&A** | Follow-up questions can trigger live web searches for current data |
 
-### Phase 2 Roadmap *(Designed, coming soon)*
+### Phase 2 — Built
 - 🧠 **Cross-session memory** — Claude remembers your org and tracks KPI trends over time
 - 🔔 **Proactive risk alerts** — Claude monitors your vertical and flags risks before you ask
 - 🔗 **Workflow integrations** — push to Slack, create Jira tickets, draft emails from results
@@ -196,6 +211,44 @@ Claude uses your figures — or conservative benchmark assumptions where fields 
 
 ---
 
+## 🚦 Open Source vs Hosted Tiers
+
+Supply Chain Health Agent follows the **open source engine / hosted service** model.
+The code is MIT — free forever. The hosted service is where advanced features live.
+
+| Feature | Open Source | Hosted Free | Pro | Team | Enterprise | Gov |
+|---|---|---|---|---|---|---|
+| Core assessment (8 domains) | ✅ Full | ✅ Full | ✅ Full | ✅ Full | ✅ Full | ✅ Full |
+| Basic PDF export | ✅ Full | ✅ Full | ✅ Full | ✅ Full | ✅ Full | ✅ Full |
+| CLI interface | ✅ Full | ✅ Full | ✅ Full | ✅ Full | ✅ Full | ✅ Full |
+| All 11 verticals | ✅ Self-hosted | ✅ Full | ✅ Full | ✅ Full | ✅ Full | ✅ Full |
+| Executive persona | ✅ Self-hosted | ✅ Full | ✅ Full | ✅ Full | ✅ Full | ✅ Full |
+| Consultant persona | ✅ Self-hosted | — | 🔒 Pro | 🔒 Pro | 🔒 Enterprise | 🔒 Gov |
+| Assessments per month | Unlimited | 3/month | Unlimited | Unlimited | Unlimited | Unlimited |
+| Cross-session memory | ✅ Self-hosted | — | 🔒 Pro | 🔒 Pro | 🔒 Enterprise | 🔒 Gov |
+| KPI trend tracking | ✅ Self-hosted | — | 🔒 Pro | 🔒 Pro | 🔒 Enterprise | 🔒 Gov |
+| Proactive risk alerts | ✅ Self-hosted | — | 🔒 Pro | 🔒 Pro | 🔒 Enterprise | 🔒 Gov |
+| Slack integration | ✅ Self-hosted | — | 🔒 Pro | 🔒 Pro | 🔒 Enterprise | 🔒 Gov |
+| Email delivery | ✅ Self-hosted | — | 🔒 Pro | 🔒 Pro | 🔒 Enterprise | 🔒 Gov |
+| Client intake forms | ✅ Self-hosted | — | 🔒 Pro | 🔒 Pro | 🔒 Enterprise | 🔒 Gov |
+| Jira integration | ✅ Self-hosted | — | — | 🔒 Team | 🔒 Enterprise | 🔒 Gov |
+| Multi-client dashboard | ✅ Self-hosted | — | — | 🔒 Team | 🔒 Enterprise | 🔒 Gov |
+| White-label reports | ✅ Self-hosted | — | — | 🔒 Team | 🔒 Enterprise | 🔒 Gov |
+| API access + webhooks | ✅ Self-hosted | — | — | 🔒 Team | 🔒 Enterprise | 🔒 Gov |
+| SSO / SAML | — | — | — | — | 🔒 Enterprise | 🔒 Gov |
+| Custom verticals | — | — | — | — | 🔒 Enterprise | 🔒 Gov |
+| On-premise deployment | — | — | — | — | 🔒 Enterprise | 🔒 Gov |
+| Audit logs | — | — | — | — | 🔒 Enterprise | 🔒 Gov |
+| FedRAMP / air-gap | — | — | — | — | — | 🔒 Gov |
+| GovCloud deployment | — | — | — | — | — | 🔒 Gov |
+
+**Self-hosters** get everything — bring your own Anthropic API key and run your own server.
+
+> Pro, Team, Enterprise, and Government tiers are in development.
+> **[Join the Waitlist](https://supply-chain-health-agent.streamlit.app)** to be first to know.
+
+---
+
 ## 🚀 Quick Start — Local Development
 
 ### 1. Clone the repo
@@ -247,13 +300,24 @@ ANTHROPIC_API_KEY = "sk-ant-..."
 supply-chain-health-agent/
 ├── agent.py          # Agentic core — web search, action pack, market intel
 ├── domains.py        # Domain definitions, 2025 KPI benchmarks, system prompt builder
-├── personas.py       # Persona configs, executive prompt extension, customisation options
-├── verticals.py      # 8 industry vertical presets with sector-specific benchmarks
+├── personas.py                   # 5 persona configs and prompt extensions
+├── phase2_config.py              # Feature flags — 6 tiers, 60+ features
+├── verticals.py                  # 11 industry vertical presets with sector-specific benchmarks
 ├── scoring.py        # Score parsing and interpretation
 ├── cli.py            # Interactive terminal interface
 ├── app.py            # Streamlit web UI — premium SaaS design, tabbed results
-├── requirements.txt  # anthropic>=0.40.0, python-dotenv>=1.0.0, streamlit>=1.35.0
-└── .env              # API key (gitignored — never committed)
+├── requirements.txt              # anthropic, streamlit, python-dotenv, reportlab
+├── memory/
+│   └── memory_store.py           # SQLite cross-session memory
+├── alerts/
+│   ├── slack_dispatcher.py       # Slack webhook delivery
+│   ├── email_dispatcher.py       # HTML email reports
+│   └── risk_monitor.py           # Claude-powered risk scanning
+├── integrations/
+│   ├── slack_integration.py      # Push assessments to Slack
+│   └── jira_integration.py       # Create Jira tickets from action plan
+├── intake/                       # Persona intake forms (Phase 3)
+└── .env                          # API key (gitignored)
 ```
 
 ---
@@ -264,8 +328,12 @@ supply-chain-health-agent/
 User (Browser or Terminal)
          │
          ▼
-  Persona Selection
-  (analyst / executive)
+  5-Persona Landing Screen
+  Analyst · Executive · Consultant
+  Enterprise (Phase 2) · Gov (Phase 3)
+         │
+         ▼
+  Vertical Selection (11 presets)
          │
          ▼
   Prompt Builder
@@ -276,25 +344,20 @@ User (Browser or Terminal)
   (claude-sonnet-4-20250514)
   + Web Search Tool (live market data)
          │
-    ┌────┴────┐
-    │         │
-    ▼         ▼
-Assessment  Auto Action Pack
- Report     (board summary +
-            90-day plan +
-            risk watch list)
-    │         │
-    └────┬────┘
-         │
          ▼
-  Market Intelligence
-  (live vertical signals)
+  Assessment Engine (agent.py)
          │
-         ▼
-  Tabbed Results UI
-  + Follow-up Q&A (with web search)
+    .----+--------------------.
+    |                         |
+    v                         v
+4-Tab Results UI         Phase 2 Engine
+ Diagnostic Report        Memory Store (SQLite)
+ Domain Deep-Dive         Risk Monitor (Claude)
+ Export (PDF)             Slack Dispatcher
+ Q&A (context-aware)      Email Dispatcher
+                          Jira Integration
+                          Feature Flags (6 tiers)
 ```
-
 ---
 
 ## 📚 Frameworks & Standards Referenced
