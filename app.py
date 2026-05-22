@@ -342,9 +342,15 @@ if st.session_state.assessment_done and st.session_state.result:
                 # Bold
                 domain_content = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', domain_content)
                 # Add paragraph breaks between domain entries
-                # Each domain entry typically starts with a capital domain name
+                # Matches **Domain Name (score/100)** or DOMAIN NAME (score/100)
                 domain_content = re.sub(
-                    r'([A-Z]{2,}[^<]{10,}?\(\d+\/100\))',
+                    r'\*\*([^*]+?\(\d+\/100[^)]*\))\*\*',
+                    r'<br><br><strong>\1</strong>',
+                    domain_content
+                )
+                # Also match unbolded domain headers like "Demand Planning (58/100 - Fair)"
+                domain_content = re.sub(
+                    r'(?<![>])((?:Demand|Procurement|Manufacturing|Inventory|Logistics|Warehousing|Risk|Sustainability)[^(]*\(\d+\/100[^)]*\))',
                     r'<br><br><strong>\1</strong>',
                     domain_content
                 )

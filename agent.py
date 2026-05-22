@@ -138,11 +138,11 @@ class SupplyChainHealthAgent:
 
         # Token budget scales with persona and features
         if self.persona == "executive":
-            max_tokens = 4000
+            max_tokens = 6000
         elif self.include_cba:
-            max_tokens = 2500
+            max_tokens = 4000
         else:
-            max_tokens = 1800
+            max_tokens = 3000
 
         try:
             response = self.client.messages.create(
