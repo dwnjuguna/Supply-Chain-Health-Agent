@@ -345,12 +345,17 @@ if st.session_state.assessment_done and st.session_state.result:
                 continue
             # Headers ## and ###
             stripped = re.sub(r'#{2,3}\s+(.+)', r'<strong>\1</strong>', stripped)
-            # Bold **text**
+            # Bold **text** — must come before italic
             stripped = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', stripped)
-            # Italic *text*
-            stripped = re.sub(r'(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)', r'<em>\1</em>', stripped)
-            # Bullet points — render inline with text
-            if re.match(r'^[-•]\s', stripped):
+            # Fix broken strong> tags missing opening <
+            stripped = re.sub(r'(?<![<])strong>', r'<strong>', stripped)
+            stripped = re.sub(r'(?<![<\/])strong>', r'<strong>', stripped)
+            # Italic *text* — only single asterisks
+            stripped = re.sub(r'(?<![\*])\*(?![\*])(.+?)(?<![\*])\*(?![\*])', r'<em>\1</em>', stripped)
+            # Bullet points — always inline with text, handle nested indent
+            if re.match(r'^\s{2,}[-•]\s', line):  # nested bullet
+                stripped = "&nbsp;&nbsp;&nbsp;&nbsp;◦ " + re.sub(r'^\s*[-•]\s', '', stripped)
+            elif re.match(r'^[-•]\s', stripped):  # top level bullet
                 stripped = "&nbsp;&nbsp;• " + stripped[2:]
             # Numbered list items
             elif re.match(r'^\d+\.\s', stripped):
@@ -359,6 +364,8 @@ if st.session_state.assessment_done and st.session_state.result:
         # Join with line breaks and clean up excessive ones
         result = "<br>".join(html_lines)
         result = re.sub(r'(<br>){3,}', '<br><br>', result)
+        # Final cleanup of any remaining broken strong tags
+        result = re.sub(r'(?<![<\/a-z])strong>', '<strong>', result)
         return result.strip("<br>")
 
     for msg in st.session_state.chat_history:
