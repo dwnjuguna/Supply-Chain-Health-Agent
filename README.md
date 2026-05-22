@@ -19,18 +19,17 @@ Open any browser, select your profile, and get a full supply chain assessment in
 
 ---
 
-## ✨ What's New in v2.0
+## ✨ What's New in v3.0
 
-| Feature | v1.0 | v2.0 |
+| Feature | v2.0 | v3.0 |
 |---|---|---|
-| Interface | Terminal CLI only | Browser app — no setup needed |
-| User personas | Single experience | Analyst/Manager + C-Suite/Board tracks |
-| AI capability | Conversational | **Agentic** — autonomous web search |
-| Market intelligence | Static training data | Live web search during every assessment |
-| Action pack | Manual Q&A | Auto-generated board summary, 90-day plan & risk list |
-| Cost-benefit analysis | Not available | Integrated with your real financial data |
-| KPI benchmarks | General guidance | Explicit 2025 Gartner Top 25 + SCOR thresholds |
-| Privacy | Local only | GDPR & CCPA compliant, zero data storage |
+| Results layout | Single scrolling page | **4-tab structured UI** |
+| Domain analysis | Inline narrative | **Dedicated Domain Deep-Dive tab** |
+| Report export | Not available | **Professional PDF export** |
+| Loading experience | Single spinner | **Multi-step progress bar** |
+| Industry verticals | 8 verticals | **11 verticals** |
+| Q&A context | Generic responses | **Assessment-aware — references your scores** |
+| Markdown rendering | Raw text | **Full bold, bullets, headers** |
 
 ---
 
@@ -56,6 +55,25 @@ The Supply Chain Health Agent uses Claude AI to evaluate your supply chain acros
   OVERALL SCORE                             69/100
 =======================================================
 ```
+
+---
+
+## 📋 4-Tab Results Structure
+
+After every assessment, results are organised into four clean tabs:
+
+| Tab | Contents |
+|---|---|
+| **📋 Diagnostic Report** | Executive Summary, Top Risks, Priority Recommendations |
+| **🏷️ Domain Deep-Dive** | Domain Highlights + Visual Score Cards for all 8 domains |
+| **📥 Export** | Download full assessment as a professional PDF report |
+| **💬 Q&A** | Follow-up chat with context-aware responses referencing your scores |
+
+---
+
+## 📄 PDF Export
+
+Every assessment can be downloaded as a professional multi-page PDF report including overall health score card, all domain scores with visual health bars, executive summary, top risks, domain highlights, and priority recommendations — ready to share with your team or board.
 
 ---
 
@@ -128,7 +146,7 @@ Each domain is scored 0–100 against explicit 2025 world-class thresholds.
 
 ---
 
-## 🏭 Industry Verticals Supported
+## 🏭 11 Industry Verticals Supported
 
 Each vertical applies sector-specific benchmarks, risk weighting, and reference organisations.
 
@@ -142,6 +160,9 @@ Each vertical applies sector-specific benchmarks, risk weighting, and reference 
 | 📦 **Consumer Packaged Goods** | Case fill rate, trade promotion, retailer compliance, ESG | P&G, Unilever, Nestlé |
 | ✈️ **Aerospace & Defense** | AS9100D compliance, long-lead parts, ITAR/EAR controls | Boeing, Airbus, Lockheed Martin |
 | 🏥 **Healthcare** | UDI traceability, sterile supply chain, GPO compliance | Medtronic, Stryker, Becton Dickinson |
+| 🍔 **Food & Beverage** | FSMA compliance, cold chain, shelf-life management, date codes | Nestlé, Coca-Cola, Tyson Foods |
+| 💻 **Technology & Electronics** | Short product lifecycles, component obsolescence, NPI readiness | Apple, Samsung, Dell, Foxconn |
+| 👗 **Apparel & Fashion** | Seasonal cycles, fast fashion speed-to-market, EPR compliance | Zara (Inditex), Nike, H&M |
 
 ---
 
