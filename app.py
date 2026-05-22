@@ -156,7 +156,12 @@ with col_btn2:
         st.rerun()
 
 if run_clicked:
-    st.session_state.agent = SupplyChainHealthAgent(vertical=vertical)
+    st.session_state.agent = SupplyChainHealthAgent(
+        vertical=vertical,
+        persona="analyst",
+        include_cba=False,
+        enable_web_search=True,
+    )
     st.session_state.chat_history = []
     st.session_state.assessment_done = False
 
