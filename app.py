@@ -58,9 +58,20 @@ st.markdown("""
     div[data-testid="stProgress"] > div { background: #534AB7 !important; }
     .persona-card {
         background: #FFFFFF; border: 2px solid #E5E7EB;
-        border-radius: 16px; padding: 1.75rem 1.5rem 1.5rem;
-        text-align: center; height: 100%;
+        border-radius: 16px; padding: 1.5rem 1.25rem 1.25rem;
+        text-align: center; height: 270px; min-height: 270px;
         transition: border-color 0.15s, box-shadow 0.15s;
+        overflow: hidden; box-sizing: border-box;
+    }
+    .persona-title {
+        font-weight: 600; font-size: 0.88rem; color: #1A1A2E;
+        margin-bottom: 8px; height: 36px;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .persona-desc {
+        font-size: 0.77rem; color: #374151; line-height: 1.5;
+        margin-bottom: 12px; height: 72px;
+        display: flex; align-items: center; justify-content: center;
     }
     .persona-card:hover { border-color: #534AB7; box-shadow: 0 6px 24px rgba(83,74,183,0.12); }
     .persona-card.exec:hover { border-color: #0F6E56; box-shadow: 0 6px 24px rgba(15,110,86,0.12); }
@@ -114,13 +125,9 @@ if st.session_state.persona is None:
         st.markdown("""
         <div class="persona-card">
             <div class="persona-icon-wrap" style="background:#EEEDFE;">📊</div>
-            <div style="font-weight:600;font-size:0.9rem;color:#1A1A2E;margin-bottom:8px;">
-                SC Manager / Analyst
-            </div>
-            <div style="font-size:0.8rem;color:#374151;line-height:1.55;margin-bottom:16px;">
-                Deep KPI diagnostics, benchmark comparisons, domain inputs,
-                and cost-benefit analysis.
-            </div>
+            <div class="persona-title">SC Manager / Analyst</div>
+            <div class="persona-desc">Deep KPI diagnostics, benchmark comparisons,
+                domain inputs, and cost-benefit analysis.</div>
             <span class="persona-badge" style="background:#534AB7;">Practitioner</span>
         </div>
         """, unsafe_allow_html=True)
@@ -134,13 +141,9 @@ if st.session_state.persona is None:
         st.markdown("""
         <div class="persona-card exec">
             <div class="persona-icon-wrap" style="background:#E1F5EE;">🏢</div>
-            <div style="font-weight:600;font-size:0.9rem;color:#1A1A2E;margin-bottom:8px;">
-                CSCO / COO / VP SC
-            </div>
-            <div style="font-size:0.8rem;color:#374151;line-height:1.55;margin-bottom:16px;">
-                Strategic scenarios, maturity roadmap, and board-ready
-                summaries for investment decisions.
-            </div>
+            <div class="persona-title">CSCO / COO / VP SC</div>
+            <div class="persona-desc">Strategic scenarios, maturity roadmap,
+                and board-ready summaries for investment decisions.</div>
             <span class="persona-badge" style="background:#0F6E56;">Executive</span>
         </div>
         """, unsafe_allow_html=True)
@@ -154,13 +157,9 @@ if st.session_state.persona is None:
         st.markdown("""
         <div class="persona-card consultant">
             <div class="persona-icon-wrap" style="background:#FEF3C7;">🎯</div>
-            <div style="font-weight:600;font-size:0.9rem;color:#1A1A2E;margin-bottom:8px;">
-                SC Consultant
-            </div>
-            <div style="font-size:0.8rem;color:#374151;line-height:1.55;margin-bottom:16px;">
-                Multi-client diagnostics, white-label reports, and
-                client intake forms for advisory practices.
-            </div>
+            <div class="persona-title">SC Consultant</div>
+            <div class="persona-desc">Multi-client diagnostics, white-label reports,
+                and client intake forms for advisory practices.</div>
             <span class="persona-badge" style="background:#E8A020;">Consultant</span>
         </div>
         """, unsafe_allow_html=True)
@@ -174,13 +173,9 @@ if st.session_state.persona is None:
         st.markdown("""
         <div class="persona-card disabled">
             <div class="persona-icon-wrap" style="background:#F1EFE8;">⚙️</div>
-            <div style="font-weight:600;font-size:0.9rem;color:#1A1A2E;margin-bottom:8px;">
-                Enterprise Config
-            </div>
-            <div style="font-size:0.8rem;color:#374151;line-height:1.55;margin-bottom:16px;">
-                Embed with custom branding, SSO, API access,
-                and compliance controls.
-            </div>
+            <div class="persona-title">Enterprise Config</div>
+            <div class="persona-desc">Embed with custom branding, SSO, API access,
+                and compliance controls.</div>
             <span class="persona-badge" style="background:#9CA3AF;">Phase 2</span>
         </div>
         """, unsafe_allow_html=True)
@@ -192,13 +187,9 @@ if st.session_state.persona is None:
         st.markdown("""
         <div class="persona-card disabled">
             <div class="persona-icon-wrap" style="background:#FEF2F2;">🏛️</div>
-            <div style="font-weight:600;font-size:0.9rem;color:#1A1A2E;margin-bottom:8px;">
-                Government / Federal
-            </div>
-            <div style="font-size:0.8rem;color:#374151;line-height:1.55;margin-bottom:16px;">
-                FedRAMP, air-gap, GovCloud, and classified
-                deployment for federal agencies.
-            </div>
+            <div class="persona-title">Government / Federal</div>
+            <div class="persona-desc">FedRAMP, air-gap, GovCloud, and classified
+                deployment for federal agencies.</div>
             <span class="persona-badge" style="background:#9CA3AF;">Phase 3</span>
         </div>
         """, unsafe_allow_html=True)
