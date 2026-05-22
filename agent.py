@@ -6,6 +6,28 @@ from scoring import parse_scores
 
 load_dotenv()
 
+# ── Web search tool definition ─────────────────────────────────────────────────
+# Server-side tool — Anthropic executes searches autonomously.
+# Claude decides when and what to search during assessment.
+# Requires web search to be enabled at console.anthropic.com.
+WEB_SEARCH_TOOL = {
+    "type": "web_search_20250305",
+    "name": "web_search",
+    "max_uses": 5,
+}
+
+# ── Text extractor for mixed content responses ─────────────────────────────────
+def _extract_text(response) -> str:
+    """
+    Extract all text content from a response that may contain mixed
+    content blocks (text, server_tool_use, web_search_tool_result).
+    """
+    parts = []
+    for block in response.content:
+        if getattr(block, "type", None) == "text" and block.text:
+            parts.append(block.text)
+    return "\n".join(parts).strip()
+
 class SupplyChainHealthAgent:
     def __init__(
         self,
