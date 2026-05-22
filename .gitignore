@@ -1,1 +1,5 @@
+__pycache__/
+*.pyc
+*.pyo
 .env
+backup_before_fixes/
