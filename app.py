@@ -175,8 +175,7 @@ if run_clicked:
     def update_status(message: str, pct: int):
         progress_bar.progress(pct)
         status_container.markdown(
-            f'<div style="background:#EEF0FF;border:1px solid #CECBF6;border-radius:10px;"
-            f"padding:0.75rem 1rem;font-size:0.875rem;color:#1A1A2E;">{message}</div>',
+            f'<div style="background:#EEF0FF;border:1px solid #CECBF6;border-radius:10px;padding:0.75rem 1rem;font-size:0.875rem;color:#1A1A2E;">{message}</div>',
             unsafe_allow_html=True,
         )
 
