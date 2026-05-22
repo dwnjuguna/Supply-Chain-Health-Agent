@@ -390,89 +390,78 @@ if st.session_state.assessment_done and st.session_state.result:
         st.markdown('<div class="section-header">💬 Follow-up Q&A</div>', unsafe_allow_html=True)
         st.caption("Ask Claude anything about your results — drill into any domain, get board summaries, action plans, and more.")
 
-    # Chat history display
-    def render_chat_markdown(text: str) -> str:
-        """Convert markdown to HTML for chat bubbles."""
-        import re
-        lines = text.split(chr(10))
-        html_lines = []
-        for line in lines:
-            stripped = line.strip()
-            if not stripped:
-                html_lines.append("<br>")
-                continue
-            # Headers ## and ###
-            stripped = re.sub(r'#{2,3}\s+(.+)', r'<strong>\1</strong>', stripped)
-            # Bold **text** — must come before italic
-            stripped = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', stripped)
-            # Fix broken strong> tags missing opening <
-            stripped = re.sub(r'(?<![<])strong>', r'<strong>', stripped)
-            stripped = re.sub(r'(?<![<\/])strong>', r'<strong>', stripped)
-            # Italic *text* — only single asterisks
-            stripped = re.sub(r'(?<![\*])\*(?![\*])(.+?)(?<![\*])\*(?![\*])', r'<em>\1</em>', stripped)
-            # Bullet points — always inline with text, handle nested indent
-            if re.match(r'^\s{2,}[-•]\s', line):  # nested bullet
-                stripped = "&nbsp;&nbsp;&nbsp;&nbsp;◦ " + re.sub(r'^\s*[-•]\s', '', stripped)
-            elif re.match(r'^[-•]\s', stripped):  # top level bullet
-                stripped = "&nbsp;&nbsp;• " + stripped[2:]
-            # Numbered list items
-            elif re.match(r'^\d+\.\s', stripped):
-                stripped = "&nbsp;&nbsp;" + stripped
-            html_lines.append(stripped)
-        # Join with line breaks and clean up excessive ones
-        result = "<br>".join(html_lines)
-        result = re.sub(r'(<br>){3,}', '<br><br>', result)
-        # Final cleanup of any remaining broken strong tags
-        result = re.sub(r'(?<![<\/a-z])strong>', '<strong>', result)
-        return result.strip("<br>")
+        def render_chat_markdown(text: str) -> str:
+            """Convert markdown to HTML for chat bubbles."""
+            import re
+            lines = text.split(chr(10))
+            html_lines = []
+            for line in lines:
+                stripped = line.strip()
+                if not stripped:
+                    html_lines.append("<br>")
+                    continue
+                stripped = re.sub(r'#{2,3}\s+(.+)', r'<strong>\1</strong>', stripped)
+                stripped = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', stripped)
+                stripped = re.sub(r'(?<![<])strong>', r'<strong>', stripped)
+                stripped = re.sub(r'(?<![<\/])strong>', r'<strong>', stripped)
+                stripped = re.sub(r'(?<![\*])\*(?![\*])(.+?)(?<![\*])\*(?![\*])', r'<em>\1</em>', stripped)
+                if re.match(r'^\s{2,}[-•]\s', line):
+                    stripped = "&nbsp;&nbsp;&nbsp;&nbsp;◦ " + re.sub(r'^\s*[-•]\s', '', stripped)
+                elif re.match(r'^[-•]\s', stripped):
+                    stripped = "&nbsp;&nbsp;• " + stripped[2:]
+                elif re.match(r'^\d+\.\s', stripped):
+                    stripped = "&nbsp;&nbsp;" + stripped
+                html_lines.append(stripped)
+            result = "<br>".join(html_lines)
+            result = re.sub(r'(<br>){3,}', '<br><br>', result)
+            result = re.sub(r'(?<![<\/a-z])strong>', '<strong>', result)
+            return result.strip("<br>")
 
-    for msg in st.session_state.chat_history:
-        rendered = render_chat_markdown(msg["content"])
-        if msg["role"] == "user":
-            st.markdown(
-                f'<div class="chat-user">🧑&nbsp; {rendered}</div>',
-                unsafe_allow_html=True
-            )
-        else:
-            st.markdown(
-                f'<div class="chat-agent">🤖&nbsp; {rendered}</div>',
-                unsafe_allow_html=True
-            )
+        for msg in st.session_state.chat_history:
+            rendered = render_chat_markdown(msg["content"])
+            if msg["role"] == "user":
+                st.markdown(
+                    f'<div class="chat-user">🧑&nbsp; {rendered}</div>',
+                    unsafe_allow_html=True
+                )
+            else:
+                st.markdown(
+                    f'<div class="chat-agent">🤖&nbsp; {rendered}</div>',
+                    unsafe_allow_html=True
+                )
 
-    # Suggested questions
-    suggestions = [
-        "What are the top 3 actions for the next 90 days?",
-        "How do we compare to world-class benchmarks?",
-        "Give me a board-level summary in 3 bullet points",
-        "Which domain has the highest ROI for improvement?",
-    ]
-    st.markdown("**💡 Suggested questions:**")
-    cols = st.columns(2)
-    for i, suggestion in enumerate(suggestions):
-        with cols[i % 2]:
-            if st.button(suggestion, key=f"sugg_{i}", use_container_width=True):
-                with st.spinner(f"🤖 Analyzing: {suggestion[:40]}..."):
-                    reply = st.session_state.agent.ask_followup(
-                        suggestion,
-                        history=st.session_state.chat_history,
-                        assessment_context=st.session_state.result.get("narrative", "") if st.session_state.result else None,
-                    )
-                st.session_state.chat_history.append({"role": "user", "content": suggestion})
-                st.session_state.chat_history.append({"role": "assistant", "content": reply})
-                st.rerun()
+        suggestions = [
+            "What are the top 3 actions for the next 90 days?",
+            "How do we compare to world-class benchmarks?",
+            "Give me a board-level summary in 3 bullet points",
+            "Which domain has the highest ROI for improvement?",
+        ]
+        st.markdown("**💡 Suggested questions:**")
+        cols = st.columns(2)
+        for i, suggestion in enumerate(suggestions):
+            with cols[i % 2]:
+                if st.button(suggestion, key=f"sugg_{i}", use_container_width=True):
+                    with st.spinner(f"🤖 Analyzing: {suggestion[:40]}..."):
+                        reply = st.session_state.agent.ask_followup(
+                            suggestion,
+                            history=st.session_state.chat_history,
+                            assessment_context=st.session_state.result.get("narrative", "") if st.session_state.result else None,
+                        )
+                    st.session_state.chat_history.append({"role": "user", "content": suggestion})
+                    st.session_state.chat_history.append({"role": "assistant", "content": reply})
+                    st.rerun()
 
-    # Free-text input
-    user_q = st.chat_input("Ask a follow-up question about your supply chain health...")
-    if user_q:
-        with st.spinner("🤖 Claude is researching your question..."):
-            reply = st.session_state.agent.ask_followup(
-                user_q,
-                history=st.session_state.chat_history,
-                assessment_context=st.session_state.result.get("narrative", "") if st.session_state.result else None,
-            )
-        st.session_state.chat_history.append({"role": "user", "content": user_q})
-        st.session_state.chat_history.append({"role": "assistant", "content": reply})
-        st.rerun()
+        user_q = st.chat_input("Ask a follow-up question about your supply chain health...")
+        if user_q:
+            with st.spinner("🤖 Claude is researching your question..."):
+                reply = st.session_state.agent.ask_followup(
+                    user_q,
+                    history=st.session_state.chat_history,
+                    assessment_context=st.session_state.result.get("narrative", "") if st.session_state.result else None,
+                )
+            st.session_state.chat_history.append({"role": "user", "content": user_q})
+            st.session_state.chat_history.append({"role": "assistant", "content": reply})
+            st.rerun()
 
 # ── Footer ─────────────────────────────────────────────────────────────────────
 st.markdown("---")
