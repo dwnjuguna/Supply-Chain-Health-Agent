@@ -92,6 +92,9 @@ with st.sidebar:
         "cpg": "📦 Consumer Packaged Goods",
         "aerospace": "✈️ Aerospace & Defense",
         "healthcare": "🏥 Healthcare",
+        "food_beverage": "🍔 Food & Beverage",
+        "technology": "💻 Technology & Electronics",
+        "apparel": "👗 Apparel & Fashion",
     }
 
     vertical_options = list(vertical_labels.keys())
