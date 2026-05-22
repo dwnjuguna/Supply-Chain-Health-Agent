@@ -261,7 +261,10 @@ if st.session_state.assessment_done and st.session_state.result:
         with cols[i % 2]:
             if st.button(suggestion, key=f"sugg_{i}", use_container_width=True):
                 with st.spinner("Claude is thinking..."):
-                    reply = st.session_state.agent.ask_followup(suggestion)
+                    reply = st.session_state.agent.ask_followup(
+                        suggestion,
+                        history=st.session_state.chat_history,
+                    )
                 st.session_state.chat_history.append({"role": "user", "content": suggestion})
                 st.session_state.chat_history.append({"role": "assistant", "content": reply})
                 st.rerun()
@@ -270,7 +273,10 @@ if st.session_state.assessment_done and st.session_state.result:
     user_q = st.chat_input("Ask a follow-up question about your supply chain health...")
     if user_q:
         with st.spinner("Claude is thinking..."):
-            reply = st.session_state.agent.ask_followup(user_q)
+            reply = st.session_state.agent.ask_followup(
+                user_q,
+                history=st.session_state.chat_history,
+            )
         st.session_state.chat_history.append({"role": "user", "content": user_q})
         st.session_state.chat_history.append({"role": "assistant", "content": reply})
         st.rerun()

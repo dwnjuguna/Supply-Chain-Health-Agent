@@ -39,30 +39,78 @@ class SupplyChainHealthAgent:
         )
         return self._call_claude(user_msg)
 
-    def ask_followup(self, question: str) -> str:
-        """Send a follow-up question maintaining full conversation history."""
-        self.chat_history.append({"role": "user", "content": question})
-        response = client.messages.create(
-            model="claude-sonnet-4-20250514",
-            max_tokens=1000,
-            system=self.system_prompt + "\n\nYou are now in follow-up Q&A mode. Answer concisely and specifically, referencing the assessment report where relevant. Do not output JSON.",
-            messages=self.chat_history
+    def ask_followup(self, question: str, history: list = None) -> str:
+        """
+        Answer a follow-up question.
+        History is owned by the caller — no internal appends here.
+        """
+        messages = (history if history is not None else self.chat_history)
+        messages = messages + [{"role": "user", "content": question}]
+
+        followup_system = (
+            self.system_prompt
+            + "\n\nYou are in follow-up Q&A mode. Answer concisely and specifically, "
+            "referencing the assessment where relevant. Do not output JSON. "
+            "You may search the web if the question requires current data."
         )
-        reply = response.content[0].text
-        self.chat_history.append({"role": "assistant", "content": reply})
+        if self.persona == "executive":
+            followup_system += (
+                " Maintain executive-level language. Lead with business impact."
+            )
+        if self.include_cba:
+            followup_system += (
+                " Remind the user that financial estimates are directional only."
+            )
+        try:
+            response = self.client.messages.create(
+                model="claude-sonnet-4-20250514",
+                max_tokens=1000,
+                system=followup_system,
+                messages=messages,
+                tools=[WEB_SEARCH_TOOL] if self.enable_web_search else [],
+            )
+            reply = _extract_text(response)
+        except Exception as e:
+            reply = f"Unable to process your question: {e}"
+
         return reply
 
     def _call_claude(self, user_msg: str) -> dict:
         self.chat_history = [{"role": "user", "content": user_msg}]
-        response = client.messages.create(
-            model="claude-sonnet-4-20250514",
-            max_tokens=1500,
-            system=self.system_prompt,
-            messages=self.chat_history
-        )
-        reply = response.content[0].text
+
+        # Token budget scales with persona and features
+        if self.persona == "executive":
+            max_tokens = 4000
+        elif self.include_cba:
+            max_tokens = 2500
+        else:
+            max_tokens = 1800
+
+        try:
+            response = self.client.messages.create(
+                model="claude-sonnet-4-20250514",
+                max_tokens=max_tokens,
+                system=self.system_prompt,
+                messages=self.chat_history,
+                tools=[WEB_SEARCH_TOOL] if self.enable_web_search else [],
+            )
+        except Exception as e:
+            return {
+                "scores":    None,
+                "narrative": f"Assessment failed: {e}",
+                "raw":       "",
+            }
+
+        reply = _extract_text(response)
         self.chat_history.append({"role": "assistant", "content": reply})
         scores = parse_scores(reply)
-        narrative_start = reply.find("EXECUTIVE")
-        narrative = reply[narrative_start:] if narrative_start != -1 else reply
+
+        # Locate narrative — try multiple section headers robustly
+        narrative = reply
+        for marker in ["EXECUTIVE SUMMARY", "EXECUTIVE", "TOP RISKS", "DOMAIN"]:
+            idx = reply.upper().find(marker)
+            if idx != -1:
+                narrative = reply[idx:]
+                break
+
         return {"scores": scores, "narrative": narrative, "raw": reply}
