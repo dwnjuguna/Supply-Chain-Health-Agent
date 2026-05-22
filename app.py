@@ -243,7 +243,7 @@ if st.session_state.assessment_done and st.session_state.result:
             for domain, score in domain_scores.items():
                 r, _ = interpret_score(int(score))
                 color = "#1D9E75" if score >= 80 else "#3B8BD4" if score >= 60 else "#BA7517" if score >= 40 else "#E24B4A"
-                st.markdown(f"**{domain.capitalize()}** — {score}/100 &nbsp; `{r}`")
+                st.markdown(f'**{domain.capitalize()}** — {score}/100 &nbsp; <span style="color:{color};font-weight:600;font-size:0.8rem;">{r}</span>', unsafe_allow_html=True)
                 st.progress(score / 100)
 
     st.markdown("<br>", unsafe_allow_html=True)
@@ -341,6 +341,13 @@ if st.session_state.assessment_done and st.session_state.result:
                 domain_content = re.sub(r'(?<![<\/a-z])strong>', '<strong>', domain_content)
                 # Bold
                 domain_content = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', domain_content)
+                # Add paragraph breaks between domain entries
+                # Each domain entry typically starts with a capital domain name
+                domain_content = re.sub(
+                    r'([A-Z]{2,}[^<]{10,}?\(\d+\/100\))',
+                    r'<br><br><strong>\1</strong>',
+                    domain_content
+                )
                 # Line breaks
                 domain_content = domain_content.replace(chr(10), "<br>")
                 domain_content = re.sub(r'(<br>){3,}', '<br><br>', domain_content)
