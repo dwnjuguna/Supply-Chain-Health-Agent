@@ -50,8 +50,10 @@ st.markdown("""
         background: #E1F5EE; border-left: 4px solid #0F6E56;
         border-radius: 0 8px 8px 0; padding: 0.75rem 1rem; margin: 0.5rem 0;
     }
-    .chat-user { background: #EEEDFE; border-radius: 12px 12px 4px 12px; padding: 0.75rem 1rem; margin: 0.5rem 0; }
-    .chat-agent { background: #F1EFE8; border-radius: 12px 12px 12px 4px; padding: 0.75rem 1rem; margin: 0.5rem 0; }
+    .chat-user { background: #EEEDFE; border-radius: 12px 12px 4px 12px; padding: 0.75rem 1rem; margin: 0.5rem 0; font-size: 0.875rem; line-height: 1.6; }
+    .chat-agent { background: #F1EFE8; border-radius: 12px 12px 12px 4px; padding: 0.75rem 1rem; margin: 0.5rem 0; font-size: 0.875rem; line-height: 1.6; }
+    .chat-agent ul, .chat-user ul { margin: 4px 0 4px 16px; padding: 0; }
+    .chat-agent li, .chat-user li { margin: 2px 0; }
     div[data-testid="stProgress"] > div { background: #534AB7 !important; }
 </style>
 """, unsafe_allow_html=True)
@@ -334,21 +336,30 @@ if st.session_state.assessment_done and st.session_state.result:
     def render_chat_markdown(text: str) -> str:
         """Convert markdown to HTML for chat bubbles."""
         import re
-        # Bold
-        text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
-        # Italic
-        text = re.sub(r'\*(.+?)\*', r'<em>\1</em>', text)
-        # Headers ## and ###
-        text = re.sub(r'#{2,3}\s+(.+)', r'<br><strong>\1</strong>', text)
-        # Numbered lists
-        text = re.sub(r'^(\d+\.\s)', r'<br>\1', text, flags=re.MULTILINE)
-        # Bullet points
-        text = re.sub(r'^[-•]\s', r'<br>• ', text, flags=re.MULTILINE)
-        # Line breaks
-        text = text.replace(chr(10), "<br>")
-        # Clean up excessive breaks
-        text = re.sub(r'(<br>){3,}', '<br><br>', text)
-        return text.strip("<br>")
+        lines = text.split(chr(10))
+        html_lines = []
+        for line in lines:
+            stripped = line.strip()
+            if not stripped:
+                html_lines.append("<br>")
+                continue
+            # Headers ## and ###
+            stripped = re.sub(r'#{2,3}\s+(.+)', r'<strong>\1</strong>', stripped)
+            # Bold **text**
+            stripped = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', stripped)
+            # Italic *text*
+            stripped = re.sub(r'(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)', r'<em>\1</em>', stripped)
+            # Bullet points — render inline with text
+            if re.match(r'^[-•]\s', stripped):
+                stripped = "&nbsp;&nbsp;• " + stripped[2:]
+            # Numbered list items
+            elif re.match(r'^\d+\.\s', stripped):
+                stripped = "&nbsp;&nbsp;" + stripped
+            html_lines.append(stripped)
+        # Join with line breaks and clean up excessive ones
+        result = "<br>".join(html_lines)
+        result = re.sub(r'(<br>){3,}', '<br><br>', result)
+        return result.strip("<br>")
 
     for msg in st.session_state.chat_history:
         rendered = render_chat_markdown(msg["content"])
