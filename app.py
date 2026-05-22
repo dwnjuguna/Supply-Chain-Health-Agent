@@ -282,8 +282,10 @@ if st.session_state.assessment_done and st.session_state.result:
             def render_markdown_content(text: str) -> str:
                 import re
                 # Step 1: Fix broken strong> tags — all possible positions
+                # Handle start of string, after newlines, after spaces
                 text = text.replace("strong>", "<strong>")
-                text = text.replace("<<strong>", "<strong>")  # fix double << if already had <
+                text = text.replace("<<strong>", "<strong>")  # fix double << if created
+                text = text.replace("<strong><strong>", "<strong>")  # fix duplicates
                 # Step 2: Bold **text**
                 text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
                 # Step 3: Italic *text*
@@ -358,6 +360,8 @@ if st.session_state.assessment_done and st.session_state.result:
                 processed_lines = []
                 for line in domain_content.split(chr(10)):
                     stripped = line.strip()
+                    if not stripped:
+                        continue
                     # Check if line starts with a known domain keyword and contains a score
                     is_header = (
                         any(stripped.startswith(kw) for kw in DOMAIN_KEYWORDS)
@@ -365,10 +369,12 @@ if st.session_state.assessment_done and st.session_state.result:
                              or any(f"({n}" in stripped for n in range(0,101)))
                     )
                     if is_header:
-                        processed_lines.append(f'<br><br><strong>{stripped}</strong>')
+                        processed_lines.append(f'<br><br><strong>{stripped}</strong><br>')
+                    elif stripped.startswith(("•", "-", "*")):
+                        processed_lines.append(f'&nbsp;&nbsp;• {stripped[2:].strip()}<br>')
                     else:
-                        processed_lines.append(stripped)
-                domain_content = chr(10).join(processed_lines)
+                        processed_lines.append(f'{stripped}<br>')
+                domain_content = "".join(processed_lines)
                 # Line breaks
                 domain_content = domain_content.replace(chr(10), "<br>")
                 domain_content = re.sub(r'(<br>){3,}', '<br><br>', domain_content)
