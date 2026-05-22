@@ -281,24 +281,32 @@ if st.session_state.assessment_done and st.session_state.result:
 
             def render_markdown_content(text: str) -> str:
                 import re
-                # Step 1: Fix broken strong> tags — all possible positions
-                # Handle start of string, after newlines, after spaces
-                text = text.replace("strong>", "<strong>")
-                text = text.replace("<<strong>", "<strong>")  # fix double << if created
-                text = text.replace("<strong><strong>", "<strong>")  # fix duplicates
-                # Step 2: Bold **text**
-                text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
-                # Step 3: Italic *text*
-                text = re.sub(r'\*(.+?)\*', r'<em>\1</em>', text)
-                # Step 4: Numbered list items
-                text = re.sub(r'^(\d+\.\s)', r'<br>\1', text, flags=re.MULTILINE)
-                # Step 5: Bullet points
-                text = re.sub(r'^[-•]\s', r'<br>• ', text, flags=re.MULTILINE)
-                # Step 6: Line breaks
-                text = text.replace(chr(10), "<br>")
-                # Step 7: Clean up excessive breaks
-                text = re.sub(r'(<br>){3,}', '<br><br>', text)
-                return text.strip("<br>")
+                # Process line by line for reliable rendering
+                lines = text.split(chr(10))
+                html_lines = []
+                for line in lines:
+                    # Fix broken strong> tag — simple replace catches ALL cases
+                    line = line.replace("strong>", "<strong>")
+                    line = line.replace("<<strong>", "<strong>")  # fix << if over-replaced
+                    line = line.replace("<strong><strong>", "<strong>")  # fix duplicates
+                    # Bold **text**
+                    line = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', line)
+                    # Italic *text*
+                    line = re.sub(r'(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)', r'<em>\1</em>', line)
+                    stripped = line.strip()
+                    if not stripped:
+                        html_lines.append("<br>")
+                    elif re.match(r'^[-•]\s', stripped):
+                        html_lines.append("&nbsp;&nbsp;• " + stripped[2:])
+                    elif re.match(r'^\d+\.\s', stripped):
+                        html_lines.append("&nbsp;&nbsp;" + stripped)
+                    else:
+                        html_lines.append(stripped)
+                result = "<br>".join(html_lines)
+                result = re.sub(r'(<br>){3,}', '<br><br>', result)
+                # Final safety net for any remaining broken tags
+                result = re.sub(r'(?:^|(?<=[^<\/a-z]))strong>', '<strong>', result)
+                return result.strip("<br>")
 
             for key, (title, _) in sections.items():
                 if key in section_text:
