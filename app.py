@@ -379,6 +379,7 @@ if st.session_state.assessment_done and st.session_state.result:
                     reply = st.session_state.agent.ask_followup(
                         suggestion,
                         history=st.session_state.chat_history,
+                        assessment_context=st.session_state.result.get("narrative", "") if st.session_state.result else None,
                     )
                 st.session_state.chat_history.append({"role": "user", "content": suggestion})
                 st.session_state.chat_history.append({"role": "assistant", "content": reply})
@@ -391,6 +392,7 @@ if st.session_state.assessment_done and st.session_state.result:
             reply = st.session_state.agent.ask_followup(
                 user_q,
                 history=st.session_state.chat_history,
+                assessment_context=st.session_state.result.get("narrative", "") if st.session_state.result else None,
             )
         st.session_state.chat_history.append({"role": "user", "content": user_q})
         st.session_state.chat_history.append({"role": "assistant", "content": reply})

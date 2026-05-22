@@ -78,18 +78,37 @@ class SupplyChainHealthAgent:
         )
         return self._call_claude(user_msg)
 
-    def ask_followup(self, question: str, history: list = None) -> str:
+    def ask_followup(
+        self,
+        question: str,
+        history: list = None,
+        assessment_context: str = None,
+    ) -> str:
         """
         Answer a follow-up question.
         History is owned by the caller — no internal appends here.
+        assessment_context: the narrative from the completed assessment,
+        injected into the system prompt so Claude always has the results.
         """
         messages = (history if history is not None else self.chat_history)
         messages = messages + [{"role": "user", "content": question}]
 
-        followup_system = (
-            self.system_prompt
-            + "\n\nYou are in follow-up Q&A mode. Answer concisely and specifically, "
-            "referencing the assessment where relevant. Do not output JSON. "
+        followup_system = self.system_prompt
+
+        # Inject the actual assessment results so Claude never loses context
+        if assessment_context:
+            followup_system += (
+                "\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                "COMPLETED ASSESSMENT RESULTS FOR THIS SESSION\n"
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                f"{assessment_context}\n"
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            )
+
+        followup_system += (
+            "\n\nYou are in follow-up Q&A mode. Always reference the specific "
+            "scores, findings and recommendations from the assessment above "
+            "when answering. Be concise and specific. Do not output JSON. "
             "You may search the web if the question requires current data."
         )
         if self.persona == "executive":
