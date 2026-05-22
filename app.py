@@ -281,12 +281,22 @@ if st.session_state.assessment_done and st.session_state.result:
 
             def render_markdown_content(text: str) -> str:
                 import re
+                # Fix broken strong> tags from web search citations
+                text = re.sub(r'(?<![<\/a-z])strong>', '<strong>', text)
+                # Bold
                 text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
+                # Italic
                 text = re.sub(r'\*(.+?)\*', r'<em>\1</em>', text)
+                # Numbered list items
                 text = re.sub(r'^(\d+\.\s)', r'<br>\1', text, flags=re.MULTILINE)
+                # Bullet points
                 text = re.sub(r'^[-•]\s', r'<br>• ', text, flags=re.MULTILINE)
+                # Line breaks
                 text = text.replace(chr(10), "<br>")
+                # Clean up excessive breaks
                 text = re.sub(r'(<br>){3,}', '<br><br>', text)
+                # Final strong tag cleanup
+                text = re.sub(r'(?<![<\/a-z])strong>', '<strong>', text)
                 return text.strip("<br>")
 
             for key, (title, _) in sections.items():
@@ -308,46 +318,61 @@ if st.session_state.assessment_done and st.session_state.result:
     with tab2:
         narrative = result.get("narrative", "")
         if narrative:
-            domain_sections = {
-                "DOMAIN HIGHLIGHTS": ("🏷️ Domain Highlights", "info"),
-            }
-            current_section = None
-            section_text2 = {}
+            # Extract ONLY the Domain Highlights section — stop at next section
+            STOP_MARKERS = [
+                "PRIORITY RECOMMENDATIONS", "COST-BENEFIT",
+                "STRATEGIC SCENARIO", "MATURITY ROADMAP"
+            ]
+            in_domain = False
+            domain_lines = []
             for line in narrative.split("\n"):
-                matched = False
-                for key in domain_sections:
-                    if key in line.upper():
-                        current_section = key
-                        section_text2[key] = []
-                        matched = True
+                if "DOMAIN HIGHLIGHTS" in line.upper():
+                    in_domain = True
+                    continue
+                if in_domain:
+                    if any(m in line.upper() for m in STOP_MARKERS):
                         break
-                if not matched and current_section:
-                    section_text2[current_section].append(line)
+                    domain_lines.append(line)
 
-            for key, (title, _) in domain_sections.items():
-                if key in section_text2:
-                    content = "\n".join(section_text2[key]).strip()
-                    if content:
-                        st.markdown(f'<div class="section-header">{title}</div>', unsafe_allow_html=True)
-                        st.markdown(content)
+            if domain_lines:
+                domain_content = "\n".join(domain_lines).strip()
+                import re
+                # Fix broken strong> tags
+                domain_content = re.sub(r'(?<![<\/a-z])strong>', '<strong>', domain_content)
+                # Bold
+                domain_content = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', domain_content)
+                st.markdown('<div class="section-header">🏷️ Domain Highlights</div>', unsafe_allow_html=True)
+                st.markdown(domain_content)
 
-            # Domain score cards
+            # Domain score cards — 2 column grid
             st.markdown('<div class="section-header">📊 Domain Score Cards</div>', unsafe_allow_html=True)
             if domain_scores:
                 col_a, col_b = st.columns(2)
                 for i, (domain, score) in enumerate(domain_scores.items()):
-                    score = max(0, min(100, int(score)))
+                    score  = max(0, min(100, int(score)))
                     r, desc_d = interpret_score(score)
-                    color = "#1D9E75" if score >= 80 else "#3B8BD4" if score >= 60 else "#BA7517" if score >= 40 else "#E24B4A"
+                    color  = "#1D9E75" if score >= 80 else "#3B8BD4" if score >= 60 else "#BA7517" if score >= 40 else "#E24B4A"
+                    bg     = "#F0FDF4" if score >= 80 else "#EFF6FF" if score >= 60 else "#FFFBEB" if score >= 40 else "#FEF2F2"
+                    filled = round(score / 5)
+                    bar    = "█" * filled + "░" * (20 - filled)
                     with col_a if i % 2 == 0 else col_b:
                         st.markdown(f"""
-                        <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-left:4px solid {color};
-                        border-radius:8px;padding:1rem;margin:0.5rem 0;">
-                            <div style="font-weight:600;font-size:0.9rem;color:#1A1A2E;">
+                        <div style="background:{bg};border:1px solid #E5E7EB;
+                        border-left:5px solid {color};border-radius:10px;
+                        padding:1.1rem 1rem;margin:0.4rem 0;">
+                            <div style="font-weight:700;font-size:0.95rem;
+                            color:#1A1A2E;margin-bottom:4px;">
                                 {domain.replace("_"," ").title()}
                             </div>
-                            <div style="font-size:1.8rem;font-weight:700;color:{color};">{score}</div>
-                            <div style="font-size:0.75rem;color:#6B7280;">{r} — {desc_d}</div>
+                            <div style="font-size:2rem;font-weight:800;
+                            color:{color};line-height:1;">{score}
+                                <span style="font-size:0.9rem;font-weight:400;
+                                color:#6B7280;">/100</span>
+                            </div>
+                            <div style="font-size:0.72rem;color:{color};
+                            font-weight:600;margin:4px 0;">{r}</div>
+                            <div style="font-family:monospace;font-size:0.65rem;
+                            color:{color};letter-spacing:1px;">{bar}</div>
                         </div>
                         """, unsafe_allow_html=True)
         else:
