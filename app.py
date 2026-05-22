@@ -269,15 +269,33 @@ if st.session_state.assessment_done and st.session_state.result:
             if not matched and current_section:
                 section_text[current_section].append(line)
 
+        def render_markdown_content(text: str) -> str:
+            """Convert markdown to HTML for rendering inside styled divs."""
+            import re
+            # Bold: **text** -> <strong>text</strong>
+            text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
+            # Italic: *text* -> <em>text</em>
+            text = re.sub(r'\*(.+?)\*', r'<em>\1</em>', text)
+            # Numbered list items
+            text = re.sub(r'^(\d+\.\s)', r'<br>\1', text, flags=re.MULTILINE)
+            # Bullet points
+            text = re.sub(r'^[-•]\s', r'<br>• ', text, flags=re.MULTILINE)
+            # Line breaks
+            text = text.replace(chr(10), "<br>")
+            # Clean up multiple consecutive breaks
+            text = re.sub(r'(<br>){3,}', '<br><br>', text)
+            return text.strip("<br>")
+
         for key, (title, _) in sections.items():
             if key in section_text:
                 content = "\n".join(section_text[key]).strip()
                 if content:
                     st.markdown(f'<div class="section-header">{title}</div>', unsafe_allow_html=True)
+                    rendered = render_markdown_content(content)
                     if key == "TOP RISKS":
-                        st.markdown(f'<div class="risk-box">{content.replace(chr(10), "<br>")}</div>', unsafe_allow_html=True)
+                        st.markdown(f'<div class="risk-box">{rendered}</div>', unsafe_allow_html=True)
                     elif key == "PRIORITY RECOMMENDATIONS":
-                        st.markdown(f'<div class="rec-box">{content.replace(chr(10), "<br>")}</div>', unsafe_allow_html=True)
+                        st.markdown(f'<div class="rec-box">{rendered}</div>', unsafe_allow_html=True)
                     else:
                         st.markdown(content)
 
