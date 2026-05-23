@@ -8,3 +8,5 @@ sc_memory.db
 SC_Health_Agent_Pricing_CONFIDENTIAL.pdf
 create_pricing_pdf.py
 *CONFIDENTIAL*
+SC_Health_Agent_Overview_v4.pdf
+create_overview_pdf.py
