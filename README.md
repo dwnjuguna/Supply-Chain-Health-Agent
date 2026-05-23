@@ -92,11 +92,11 @@ Every assessment can be downloaded as a professional multi-page PDF report inclu
 
 ---
 
-## 👤 Two User Tracks
+## 👤 Five User Tracks
 
 Select your profile at the landing screen — the tool adapts everything from that single choice.
 
-### 📊 Supply Chain Manager / Analyst Track
+### 📊 SC Manager / Analyst Track ✅ Live
 Built for practitioners who speak the KPI language.
 - Deep domain diagnostics across all 8 SCOR domains
 - Custom assessment mode — describe your org, get tailored scores
@@ -104,7 +104,7 @@ Built for practitioners who speak the KPI language.
 - Cost-benefit analysis with your real financial figures
 - Follow-up Q&A with live web search access
 
-### 🏢 C-Suite / Board Member Track
+### 🏢 CSCO / COO / VP Supply Chain Track ✅ Live
 Built for leaders making investment and transformation decisions.
 - Strategic scenario comparison — 3 named paths with trade-offs, investment ranges, and KPI targets
 - 36-month phased maturity roadmap (Stabilise → Build → Lead)
@@ -112,8 +112,29 @@ Built for leaders making investment and transformation decisions.
 - Customisable orientation: growth-first vs cost-out vs balanced
 - Financial context for dollar-sized scenario estimates
 
+### 🎯 Supply Chain Consultant Track ✅ Live
+Built for advisory professionals managing multiple client engagements.
+- Multi-client diagnostic capability across all 11 verticals
+- Client intake forms — shareable pre-assessment questionnaires
+- White-label PDF reports with client branding
+- Side-by-side client comparison and benchmarking
+- Consultant-optimised output format for deliverables
+
 ### ⚙️ Enterprise Configuration *(Coming — Phase 2)*
 Embed and configure the agent within your organisation's systems with custom branding, access controls, and compliance guardrails.
+- SSO / SAML authentication and user management
+- API access and webhook integrations
+- Custom vertical definitions and branded outputs
+- Audit logs, admin panel, and SLA guarantee
+- On-premise deployment option
+
+### 🏛️ Government / Federal Edition *(Coming — Phase 3)*
+Purpose-built for federal agencies and defense contractors requiring the highest security standards.
+- Air-gapped and GovCloud AWS deployment
+- FedRAMP authorization pathway
+- ITAR controls and FIPS 140-2 compliance
+- Classified mode with dedicated infrastructure
+- Federal SI partner model
 
 ---
 
