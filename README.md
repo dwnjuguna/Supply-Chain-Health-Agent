@@ -477,7 +477,8 @@ MIT License — see [LICENSE](LICENSE) for details. Free to use, share, and adap
 | Resource | Link |
 |---|---|
 | 🌐 Live app | [supply-chain-health-agent.streamlit.app](https://supply-chain-health-agent.streamlit.app) |
-| 📄 Product overview PDF | `SC_Health_Agent_Overview_v2.pdf` (in this repo) |
+| 📄 Product overview PDF | `SC_Health_Agent_Overview_v4.1.pdf` (in this repo) |
+| 📊 Commercial deck PDF | `SC_Health_Agent_Deck_v4.1.pdf` (in this repo) |
 | 📖 Anthropic Claude SDK | [docs.anthropic.com](https://docs.anthropic.com) |
 | 🔑 Get an API key | [console.anthropic.com](https://console.anthropic.com) |
 | 📋 SCOR model | [ascm.org/learning-development/scor](https://www.ascm.org/learning-development/scor/) |
