@@ -53,9 +53,15 @@ The latest release folds in McKinsey **REWIRED** principles and **2026** global 
 
 The Supply Chain Health Agent uses Claude AI to evaluate your supply chain across **8 SCOR-aligned domains**, benchmark your performance against 2026 world-class standards, autonomously search for live market intelligence, and deliver a prioritised assessment — all in under 60 seconds.
 
+#### 🆕 New in v4.1 (REWIRED + 2026)
+- **North Star intake** — frames recommendations against your 2-year excellence vision
+- **Benchmark transparency** — every score cites its world-class benchmark and source inline
+- **Geopolitical & sourcing footprint** — China / rare-earth exposure and offshore vs nearshore vs reshore questions feed the Risk & Procurement scores
+- **Cyber resilience** — scored as a named sub-dimension within the Risk domain
+
 ```
 =======================================================
-   SUPPLY CHAIN HEALTH AGENT  |  v2.0
+   SUPPLY CHAIN HEALTH AGENT  |  v4.1
    Powered by Anthropic Claude SDK
 =======================================================
 
@@ -404,7 +410,7 @@ User (Browser or Terminal)
          │
          ▼
   Anthropic Claude API
-  (claude-sonnet-4-20250514)
+  (claude-sonnet-4-6, auto-fallback to Opus 4.8 / Haiku 4.5)
   + Web Search Tool (live market data)
          │
          ▼
