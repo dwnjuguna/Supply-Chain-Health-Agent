@@ -376,16 +376,23 @@ with col_btn2:
 
 if run_clicked:
     active_persona = st.session_state.persona or "analyst"
-    st.session_state.agent = SupplyChainHealthAgent(
-        vertical=vertical,
-        persona=active_persona,
-        include_cba=(active_persona in ("analyst", "consultant")),
-        enable_web_search=True,
-        customisation=exec_customisation,
-        north_star=north_star,
-        sourcing_exposure=sourcing_exposure,
-        sourcing_footprint=sourcing_footprint,
-    )
+    try:
+        st.session_state.agent = SupplyChainHealthAgent(
+            vertical=vertical,
+            persona=active_persona,
+            include_cba=(active_persona in ("analyst", "consultant")),
+            enable_web_search=True,
+            customisation=exec_customisation,
+            north_star=north_star,
+            sourcing_exposure=sourcing_exposure,
+            sourcing_footprint=sourcing_footprint,
+        )
+    except RuntimeError:
+        st.error(
+            "⚠️ The AI model is temporarily unavailable. Please try again in a "
+            "few minutes or check the GitHub repo for updates."
+        )
+        st.stop()
     st.session_state.chat_history = []
     st.session_state.assessment_done = False
 

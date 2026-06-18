@@ -17,8 +17,12 @@ import warnings
 # Flat repo layout — add the project root (parent of tests/) to the import path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# Skip the live model probe so importing `agent` makes no real API call.
+os.environ.setdefault("SCHA_SKIP_MODEL_RESOLUTION", "1")
+
 from domains import build_system_prompt, DOMAINS
 from scoring import parse_scores
+import agent as agent_mod
 
 
 # Markers for each conditionally-injected block
@@ -145,3 +149,15 @@ def test_default_analyst_prompt_has_base_content():
     assert "2026 WORLD-CLASS KPI BENCHMARKS BY DOMAIN" in p
     assert "BENCHMARK TRANSPARENCY (REQUIRED)" in p
     assert CYBER_INSTR_MARKER in p  # cyber is base content — always present
+
+
+# ── (5) Model configuration ─────────────────────────────────────────────────────
+
+def test_model_preference_is_nonempty_list_of_strings():
+    assert isinstance(agent_mod.MODEL_PREFERENCE, list)
+    assert len(agent_mod.MODEL_PREFERENCE) >= 1
+    assert all(isinstance(m, str) and m for m in agent_mod.MODEL_PREFERENCE)
+
+def test_resolved_model_is_a_string():
+    # With SCHA_SKIP_MODEL_RESOLUTION set, MODEL = MODEL_PREFERENCE[0] (no API call).
+    assert isinstance(agent_mod.MODEL, str) and agent_mod.MODEL
