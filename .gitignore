@@ -9,5 +9,11 @@ sc_memory.db
 SC_Health_Agent_Pricing_CONFIDENTIAL.pdf
 create_pricing_pdf.py
 *CONFIDENTIAL*
-SC_Health_Agent_Overview_v4.pdf
 create_overview_pdf.py
+
+# Superseded PDF versions — do not re-add
+SC_Health_Agent_Overview.pdf
+SC_Health_Agent_Overview_v2.pdf
+SC_Health_Agent_Overview_v4.pdf
+SC_Health_Agentic_AI_Tool_Usage_Deck_v3.1.pdf
+SC_Health_Agentis_AI_Tool_Usage_Deck.pdf
