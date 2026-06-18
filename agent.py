@@ -6,6 +6,10 @@ from scoring import parse_scores
 
 load_dotenv()
 
+# ── Model ───────────────────────────────────────────────────────────────────────
+# Single source of truth for the Claude model used across all assessment calls.
+MODEL = "claude-sonnet-4-6"
+
 # ── Web search tool definition ─────────────────────────────────────────────────
 # Server-side tool — Anthropic executes searches autonomously.
 # Claude decides when and what to search during assessment.
@@ -135,7 +139,7 @@ class SupplyChainHealthAgent:
             )
         try:
             response = self.client.messages.create(
-                model="claude-sonnet-4-20250514",
+                model=MODEL,
                 max_tokens=1000,
                 system=followup_system,
                 messages=messages,
@@ -160,7 +164,7 @@ class SupplyChainHealthAgent:
 
         try:
             response = self.client.messages.create(
-                model="claude-sonnet-4-20250514",
+                model=MODEL,
                 max_tokens=max_tokens,
                 system=self.system_prompt,
                 messages=self.chat_history,
