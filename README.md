@@ -19,6 +19,21 @@ Open any browser, select your profile, and get a full supply chain assessment in
 
 ---
 
+## 🆕 What's New — v4.1 (REWIRED + 2026 Update)
+
+The latest release folds in McKinsey **REWIRED** principles and **2026** global supply chain trends ([PR #1](https://github.com/dwnjuguna/Supply-Chain-Health-Agent/pull/1)):
+
+- **🌟 North Star intake** — a new opening question ("What does supply chain excellence look like for your organization in 2 years?") frames every recommendation against your stated vision.
+- **🔍 Benchmark transparency** — every domain score is now reported with its world-class benchmark and source inline (e.g. *Demand: 64/100 — world-class 85, per Gartner*).
+- **📈 2026 benchmarks** — all 8 domain benchmarks and trend notes refreshed to 2026, plus a cross-cutting **AI & Digital Adoption** standard (~70% of firms now report advanced/transformational AI adoption — *AI-as-operator*).
+- **🌍 Geopolitical & sourcing footprint** — new intake questions on China-origin / rare-earth exposure and offshore vs nearshore vs reshore strategy, feeding the Risk and Procurement scores.
+- **🛡️ Cyber resilience** — now scored and narrated as a named sub-dimension of the Risk domain, referencing 2026 AI-enabled attack vectors and digital supply chain vulnerabilities.
+- **🐛 Wiring fixes** — the executive persona (strategic scenarios + 36-month roadmap) and cost-benefit analysis now correctly reach the assessment engine at runtime.
+
+> Fully covered by a 17-test unit suite (see [Running Tests](#-running-tests)). No new runtime dependencies.
+
+---
+
 ## ✨ What's New in v4.0
 
 | Feature | v3.0 | v4.0 |
@@ -36,7 +51,7 @@ Open any browser, select your profile, and get a full supply chain assessment in
 
 ## 🎯 What It Does
 
-The Supply Chain Health Agent uses Claude AI to evaluate your supply chain across **8 SCOR-aligned domains**, benchmark your performance against 2025 world-class standards, autonomously search for live market intelligence, and deliver a prioritised assessment — all in under 60 seconds.
+The Supply Chain Health Agent uses Claude AI to evaluate your supply chain across **8 SCOR-aligned domains**, benchmark your performance against 2026 world-class standards, autonomously search for live market intelligence, and deliver a prioritised assessment — all in under 60 seconds.
 
 ```
 =======================================================
@@ -100,7 +115,7 @@ Select your profile at the landing screen — the tool adapts everything from th
 Built for practitioners who speak the KPI language.
 - Deep domain diagnostics across all 8 SCOR domains
 - Custom assessment mode — describe your org, get tailored scores
-- Benchmark gaps vs 2025 Gartner Top 25 world-class thresholds
+- Benchmark gaps vs 2026 Gartner Top 25 world-class thresholds
 - Cost-benefit analysis with your real financial figures
 - Follow-up Q&A with live web search access
 
@@ -167,7 +182,7 @@ This is not just a chatbot. Claude takes autonomous multi-step actions during ev
 
 ## 📊 8 Health Domains Assessed
 
-Each domain is scored 0–100 against explicit 2025 world-class thresholds.
+Each domain is scored 0–100 against explicit 2026 world-class thresholds.
 
 | Domain | SCOR | Key KPIs | World-Class Target |
 |---|---|---|---|
@@ -177,7 +192,7 @@ Each domain is scored 0–100 against explicit 2025 world-class thresholds.
 | Inventory Management | Plan/Deliver | Turns, stockout rate, E&O%, cash-to-cash | 8–12x turns, stockout <1% |
 | Logistics & Transportation | Deliver | OTIF, freight cost %, perfect order rate | OTIF 95–98% |
 | Warehousing & Fulfillment | Deliver | Order accuracy, utilisation, lines/hour | Accuracy ≥99.9% |
-| Risk & Resilience | Enable | BCP coverage, TTR, supplier risk tiers | BCP ≥95% of critical nodes |
+| Risk & Resilience | Enable | BCP coverage, TTR, supplier risk tiers, **cyber resilience** | BCP ≥95% of critical nodes |
 | Sustainability & ESG | Enable | Scope 3 tracking, ESG audit coverage | Scope 3 ≥80% tracked |
 
 **Score bands:**
@@ -310,6 +325,25 @@ python3 cli.py
 
 ---
 
+## 🧪 Running Tests
+
+The prompt-assembly and scoring logic is covered by a fast unit suite — **no API key required** (no network calls, no Streamlit needed).
+
+```bash
+pip install -r dev-requirements.txt
+pytest -q
+```
+
+**17 tests** validate:
+- Conditional prompt blocks (CBA, executive sections, North Star, sourcing, cyber) include/exclude correctly
+- The JSON scores contract stays exactly 8 domains (no key leakage)
+- `parse_scores()` clamps to 0–100 and fails gracefully on malformed input
+- A default analyst prompt contains no user-injected blocks (regression guard)
+
+Test dependencies live in `dev-requirements.txt`, kept separate from runtime `requirements.txt`.
+
+---
+
 ## ☁️ Deploy to Streamlit Community Cloud
 
 1. Fork this repo to your GitHub account
@@ -328,7 +362,7 @@ ANTHROPIC_API_KEY = "sk-ant-..."
 ```
 supply-chain-health-agent/
 ├── agent.py          # Agentic core — web search, action pack, market intel
-├── domains.py        # Domain definitions, 2025 KPI benchmarks, system prompt builder
+├── domains.py        # Domain definitions, 2026 KPI benchmarks, system prompt builder
 ├── personas.py                   # 5 persona configs and prompt extensions
 ├── phase2_config.py              # Feature flags — 6 tiers, 60+ features
 ├── verticals.py                  # 11 industry vertical presets with sector-specific benchmarks
