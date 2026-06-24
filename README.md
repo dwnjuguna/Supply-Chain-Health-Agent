@@ -310,6 +310,56 @@ python3 cli.py
 
 ---
 
+## MCP Server (Claude Desktop & Claude Code)
+
+The repo ships a Model Context Protocol (MCP) server that exposes the Supply Chain
+Health Agent as a set of callable tools inside any MCP-compatible AI client — Claude
+Desktop, Claude Code, or any other MCP host. Once registered, you can ask the
+assistant to run a full supply chain assessment, pull KPI benchmarks, or review
+assessment history directly in chat; it calls the SCHA engine on your behalf and
+streams the structured results back — no browser or CLI required.
+
+### Register with Claude Desktop
+
+Add the following to your `claude_desktop_config.json` (macOS:
+`~/Library/Application Support/Claude/claude_desktop_config.json`; Windows:
+`%APPDATA%\Claude\claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "supply-chain-health-agent": {
+      "command": "python3",
+      "args": ["-m", "mcp_server.server"],
+      "cwd": "/absolute/path/to/supply-chain-health-agent",
+      "env": {
+        "ANTHROPIC_API_KEY": "sk-ant-..."
+      }
+    }
+  }
+}
+```
+
+> **Replace the `cwd` path with your own repo location** — set it to the absolute
+> path of the folder where you cloned this repo (the directory that contains
+> `mcp_server/`, `agent.py`, and `requirements.txt`). The `ANTHROPIC_API_KEY` is
+> required for `run_assessment`; supply it here or via a `.env` file in that same
+> directory. Restart Claude Desktop after editing the config.
+
+For **Claude Code**, register the same server from that directory with:
+
+```bash
+claude mcp add supply-chain-health-agent -- python3 -m mcp_server.server
+```
+
+### Tools exposed
+
+- `run_assessment` — Runs a full supply chain health assessment for an organization — 8-domain scores, overall score, narrative report, and a prioritized action pack — benchmarked against SCOR and Gartner standards.
+- `get_assessment_history` — Lists previously persisted assessment runs (optionally filtered by organization). Persistence lands in a future release; for now it returns an empty list.
+- `get_benchmarks` — Returns the 2026 world-class KPI benchmarks, optionally filtered by domain and/or industry vertical.
+
+---
+
 ## ☁️ Deploy to Streamlit Community Cloud
 
 1. Fork this repo to your GitHub account
