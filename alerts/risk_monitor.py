@@ -23,6 +23,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 import anthropic
 from datetime import datetime, timezone
 
+from agent import MODEL  # single source of truth for the Claude model id
+
 
 # ── Web search tool ───────────────────────────────────────────────────────────
 WEB_SEARCH_TOOL = {
@@ -98,7 +100,7 @@ def scan_for_risks(
 
     try:
         response = client.messages.create(
-            model="claude-sonnet-4-20250514",
+            model=MODEL,
             max_tokens=1500,
             system=(
                 "You are a supply chain risk intelligence analyst with access to "

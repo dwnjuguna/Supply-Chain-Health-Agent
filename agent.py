@@ -6,6 +6,68 @@ from scoring import parse_scores
 
 load_dotenv()
 
+# ── Model selection ──────────────────────────────────────────────────────────
+# Priority-ordered Claude models. resolve_model() probes each at startup and
+# selects the first that responds, so a retired model id fails over instead of
+# taking the whole app down.
+MODEL_PREFERENCE = [
+    "claude-sonnet-4-6",
+    "claude-opus-4-8",
+    "claude-haiku-4-5-20251001",
+]
+
+
+def _make_client():
+    """Build an Anthropic client, honouring Streamlit secrets when available."""
+    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    try:
+        import streamlit as st
+        api_key = st.secrets.get("ANTHROPIC_API_KEY", api_key)
+    except Exception:
+        pass
+    return anthropic.Anthropic(api_key=api_key)
+
+
+def resolve_model(client=None) -> str:
+    """
+    Probe MODEL_PREFERENCE in order with a minimal 1-token request and return
+    the first model id that responds. Raises RuntimeError if every candidate
+    fails (e.g. all retired / 404), with a message explaining what happened.
+    """
+    client = client or _make_client()
+    errors = []
+    for model_id in MODEL_PREFERENCE:
+        try:
+            client.messages.create(
+                model=model_id,
+                max_tokens=1,
+                messages=[{"role": "user", "content": "ping"}],
+            )
+            return model_id
+        except Exception as e:
+            errors.append(f"{model_id} ({type(e).__name__})")
+            continue
+    raise RuntimeError(
+        "No available Claude model. Tried: " + ", ".join(MODEL_PREFERENCE)
+        + ". All candidates failed [" + "; ".join(errors) + "]. The model ids "
+        "may have been retired — update MODEL_PREFERENCE in agent.py."
+    )
+
+
+# Validate the model once at import (startup). Wrapped so the module still
+# imports if resolution fails — agent construction then raises a clear
+# RuntimeError the UI can handle. Set SCHA_SKIP_MODEL_RESOLUTION=1 to bypass
+# the live probe (used by the unit tests / CI so import makes no API call).
+_MODEL_ERROR = None
+if os.environ.get("SCHA_SKIP_MODEL_RESOLUTION") == "1":
+    MODEL = MODEL_PREFERENCE[0]
+else:
+    try:
+        MODEL = resolve_model()
+    except RuntimeError as _e:
+        MODEL = None
+        _MODEL_ERROR = str(_e)
+
 # ── Web search tool definition ─────────────────────────────────────────────────
 # Server-side tool — Anthropic executes searches autonomously.
 # Claude decides when and what to search during assessment.
@@ -36,22 +98,35 @@ class SupplyChainHealthAgent:
         include_cba: bool = False,
         enable_web_search: bool = True,
         customisation: dict = None,
+        north_star: str = "",
+        sourcing_exposure: str = "",
+        sourcing_footprint: str = "",
     ):
+        if MODEL is None:
+            raise RuntimeError(
+                _MODEL_ERROR
+                or "No available Claude model — model resolution failed at startup."
+            )
         self.vertical          = vertical
         self.persona           = persona
         self.include_cba       = include_cba
         self.enable_web_search = enable_web_search
         self.customisation     = customisation or {}
+        self.north_star        = north_star or ""
+        self.sourcing_exposure  = sourcing_exposure or ""
+        self.sourcing_footprint = sourcing_footprint or ""
         self.chat_history      = []
-        self.system_prompt     = build_system_prompt(vertical)
+        self.system_prompt     = build_system_prompt(
+            vertical,
+            include_cba=self.include_cba,
+            persona=self.persona,
+            customisation=self.customisation,
+            north_star=self.north_star,
+            sourcing_exposure=self.sourcing_exposure,
+            sourcing_footprint=self.sourcing_footprint,
+        )
 
-        api_key = os.environ.get("ANTHROPIC_API_KEY", "")
-        try:
-            import streamlit as st
-            api_key = st.secrets.get("ANTHROPIC_API_KEY", api_key)
-        except Exception:
-            pass
-        self.client = anthropic.Anthropic(api_key=api_key)
+        self.client = _make_client()
 
     def run_general_assessment(self) -> dict:
         """Run a general industry-benchmark health check."""
@@ -121,7 +196,7 @@ class SupplyChainHealthAgent:
             )
         try:
             response = self.client.messages.create(
-                model="claude-sonnet-4-20250514",
+                model=MODEL,
                 max_tokens=1000,
                 system=followup_system,
                 messages=messages,
@@ -146,7 +221,7 @@ class SupplyChainHealthAgent:
 
         try:
             response = self.client.messages.create(
-                model="claude-sonnet-4-20250514",
+                model=MODEL,
                 max_tokens=max_tokens,
                 system=self.system_prompt,
                 messages=self.chat_history,

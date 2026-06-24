@@ -281,21 +281,86 @@ with st.sidebar:
 
 # ── Custom inputs ─────────────────────────────────────────────────────────────
 custom_inputs = {}
+exec_customisation = {}
+north_star = ""
+sourcing_exposure = ""
+sourcing_footprint = ""
 if mode == "custom":
-    st.markdown('<div class="section-header">📝 Describe Your Supply Chain</div>', unsafe_allow_html=True)
-    st.caption("Fill in as many domains as you can. Leave blank if not applicable — Claude will flag the gap.")
+    # North Star vision — REWIRED framing question, shown for every persona
+    st.markdown('<div class="section-header">🌟 Your North Star</div>', unsafe_allow_html=True)
+    north_star = st.text_area(
+        "What does supply chain excellence look like for your organization in 2 years?",
+        placeholder="e.g. 'A resilient, AI-driven network: 98% OTIF, inventory turns up 30%, "
+                    "full Tier-2 visibility, and nearshored critical components.'",
+        height=80,
+        key="north_star",
+    )
 
-    col1, col2 = st.columns(2)
-    for i, domain in enumerate(DOMAINS):
-        with col1 if i % 2 == 0 else col2:
+    if persona == "executive":
+        # Executive track — strategic, jargon-light context questions
+        st.markdown('<div class="section-header">🏢 Strategic Context</div>', unsafe_allow_html=True)
+        st.caption("Answer in plain language — these shape the strategic scenarios and maturity roadmap.")
+
+        for q in EXECUTIVE_CONTEXT_QUESTIONS:
             val = st.text_area(
-                domain["label"],
-                placeholder=f"Describe your current {domain['label'].lower()} state, metrics, tools, and challenges...",
-                height=90,
-                key=f"input_{domain['key']}"
+                q["label"],
+                placeholder=q["placeholder"],
+                height=q.get("height", 90),
+                key=f"exec_{q['key']}",
             )
             if val.strip():
-                custom_inputs[domain["label"]] = val
+                custom_inputs[q["label"]] = val
+
+        # Customisation preferences → flow into the executive prompt extension
+        with st.expander("⚙️ Customise this assessment"):
+            for ckey, cfg in EXECUTIVE_CUSTOMISATION_OPTIONS.items():
+                default = cfg.get("default")
+                idx = cfg["options"].index(default) if default in cfg["options"] else 0
+                exec_customisation[ckey] = st.selectbox(
+                    cfg["label"],
+                    cfg["options"],
+                    index=idx,
+                    help=cfg.get("help"),
+                    key=f"cust_{ckey}",
+                )
+    else:
+        # Analyst / consultant track — granular per-domain inputs
+        st.markdown('<div class="section-header">📝 Describe Your Supply Chain</div>', unsafe_allow_html=True)
+        st.caption("Fill in as many domains as you can. Leave blank if not applicable — Claude will flag the gap.")
+
+        col1, col2 = st.columns(2)
+        for i, domain in enumerate(DOMAINS):
+            with col1 if i % 2 == 0 else col2:
+                val = st.text_area(
+                    domain["label"],
+                    placeholder=f"Describe your current {domain['label'].lower()} state, metrics, tools, and challenges...",
+                    height=90,
+                    key=f"input_{domain['key']}"
+                )
+                if val.strip():
+                    custom_inputs[domain["label"]] = val
+
+        # ── Geopolitical & sourcing footprint (informs Risk & Procurement scoring) ──
+        st.markdown('<div class="section-header">🌍 Geopolitical & Sourcing Footprint</div>', unsafe_allow_html=True)
+        st.caption("2026 supply chains live or die on sourcing resilience — these feed the Risk and Procurement scores.")
+        sourcing_exposure = st.text_area(
+            "What is your primary sourcing geography, and what is your exposure to "
+            "China-origin inputs or rare earth materials?",
+            placeholder="e.g. 'Primary sourcing from China and SE Asia; ~40% of components "
+                        "China-origin; two critical magnets depend on rare earths with no "
+                        "qualified alternative source.'",
+            height=90,
+            key="sourcing_exposure",
+        )
+        sourcing_footprint = st.text_area(
+            "What is your current sourcing footprint strategy — offshore, nearshoring "
+            "in progress, or reshoring?",
+            placeholder="e.g. 'Predominantly offshore today; nearshoring to Mexico in "
+                        "progress for two product lines; evaluating reshoring of critical "
+                        "components but the cost gap is significant.'",
+            height=90,
+            key="sourcing_footprint",
+        )
 
 # ── Run assessment ─────────────────────────────────────────────────────────────
 col_btn1, col_btn2, _ = st.columns([1, 1, 4])
@@ -310,12 +375,24 @@ with col_btn2:
         st.rerun()
 
 if run_clicked:
-    st.session_state.agent = SupplyChainHealthAgent(
-        vertical=vertical,
-        persona=st.session_state.persona or "analyst",
-        include_cba=False,
-        enable_web_search=True,
-    )
+    active_persona = st.session_state.persona or "analyst"
+    try:
+        st.session_state.agent = SupplyChainHealthAgent(
+            vertical=vertical,
+            persona=active_persona,
+            include_cba=(active_persona in ("analyst", "consultant")),
+            enable_web_search=True,
+            customisation=exec_customisation,
+            north_star=north_star,
+            sourcing_exposure=sourcing_exposure,
+            sourcing_footprint=sourcing_footprint,
+        )
+    except RuntimeError:
+        st.error(
+            "⚠️ The AI model is temporarily unavailable. Please try again in a "
+            "few minutes or check the GitHub repo for updates."
+        )
+        st.stop()
     st.session_state.chat_history = []
     st.session_state.assessment_done = False
 

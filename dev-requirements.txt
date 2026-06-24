@@ -1,0 +1,3 @@
+# Development / test dependencies — kept separate so runtime requirements.txt stays clean.
+# Install with: pip install -r dev-requirements.txt
+pytest>=8.0.0
