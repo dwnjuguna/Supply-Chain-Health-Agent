@@ -244,9 +244,9 @@ personas = [
      "and KPI targets. 36-month phased maturity roadmap. Board-ready language throughout. "
      "Customisable orientation: growth-first vs cost-out vs balanced."),
     ("SC CONSULTANT",         "Consultant Track  —  Live Now",      AMBER,  LAMBER,
-     "Multi-client diagnostics across all 11 verticals. White-label PDF reports with "
-     "client branding. Client intake forms — shareable pre-assessment questionnaires. "
-     "Side-by-side client comparison and benchmarking."),
+     "Assess any client across all 11 industry verticals. "
+     "Cost-benefit analysis included in every assessment output. "
+     "Follow-up Q&amp;A with live web search for current market data."),
     ("ENTERPRISE IT / CONFIG","Enterprise Track  —  Phase 2",
      colors.HexColor("#6B7280"), colors.HexColor("#F3F4F6"),
      "SSO / SAML authentication. API access and webhook integrations. Custom vertical "
@@ -408,10 +408,6 @@ tier_tbl = Table([
      tier_self(), tier_no(), tier_no(), tier_team(), tier_team(), tier_team()],
     [Paragraph("MCP server access",           ps(8, color=SLATE)),
      tier_yes(), tier_yes(), tier_yes(), tier_yes(), tier_yes(), tier_yes()],
-    [Paragraph("White-label reports",         ps(8, color=SLATE)),
-     tier_self(), tier_no(), tier_no(), tier_team(), tier_team(), tier_team()],
-    [Paragraph("API access + webhooks",       ps(8, color=SLATE)),
-     tier_self(), tier_no(), tier_no(), tier_team(), tier_team(), tier_team()],
     [Paragraph("SSO / SAML",                  ps(8, color=SLATE)),
      tier_no(), tier_no(), tier_no(), tier_no(), tier_ent(), tier_ent()],
     [Paragraph("On-premise deployment",       ps(8, color=SLATE)),
