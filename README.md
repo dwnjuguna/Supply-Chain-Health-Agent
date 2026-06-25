@@ -19,6 +19,15 @@ Open any browser, select your profile, and get a full supply chain assessment in
 
 ---
 
+## 🆕 What's New — v4.2 (MCP Server)
+
+- **Free-tier MCP server** — stdio transport, 3 tools (run_assessment, get_benchmarks, get_assessment_history)
+- **Claude Desktop and Claude Code compatible** — one config block to connect
+- **mcp>=1.28.0** added to requirements.txt
+- **Technical Architecture deck** updated to 36 slides — Gamma-generated
+
+---
+
 ## 🆕 What's New — v4.1 (REWIRED + 2026 Update)
 
 The latest release folds in McKinsey **REWIRED** principles and **2026** global supply chain trends ([PR #1](https://github.com/dwnjuguna/Supply-Chain-Health-Agent/pull/1)):
@@ -61,7 +70,7 @@ The Supply Chain Health Agent uses Claude AI to evaluate your supply chain acros
 
 ```
 =======================================================
-   SUPPLY CHAIN HEALTH AGENT  |  v4.1
+   SUPPLY CHAIN HEALTH AGENT  |  v4.2
    Powered by Anthropic Claude SDK
 =======================================================
 
@@ -527,8 +536,8 @@ MIT License — see [LICENSE](LICENSE) for details. Free to use, share, and adap
 | Resource | Link |
 |---|---|
 | 🌐 Live app | [supply-chain-health-agent.streamlit.app](https://supply-chain-health-agent.streamlit.app) |
-| 📄 Product overview PDF | `SC_Health_Agent_Overview_v4.1.pdf` (in this repo) |
-| 📊 Commercial deck PDF | `SC_Health_Agent_Deck_v4.1.pdf` (in this repo) |
+| 📄 Product overview PDF | `SC_Health_Agent_Overview_v4_2.pdf` (in this repo) |
+| 📊 Technical architecture deck PDF | `SC_Health_Agent_Tech_Deck_v4_2.pdf` (in this repo) |
 | 📖 Anthropic Claude SDK | [docs.anthropic.com](https://docs.anthropic.com) |
 | 🔑 Get an API key | [console.anthropic.com](https://console.anthropic.com) |
 | 📋 SCOR model | [ascm.org/learning-development/scor](https://www.ascm.org/learning-development/scor/) |
