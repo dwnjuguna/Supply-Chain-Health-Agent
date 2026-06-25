@@ -186,10 +186,10 @@ This is not just a chatbot. Claude takes autonomous multi-step actions during ev
 - 🎫 **Jira integration** — parse 90-day action plan and create tracked tickets automatically
 - 📧 **Email dispatcher** — branded HTML email reports with domain scores and risk alerts
 - 🚦 **Feature flags** — 60+ features gated across 6 tiers without pricing in code
+- 🔌 **MCP server** — free-tier stdio transport, 3 tools, Claude Desktop & Claude Code ready (v4.2)
+- 📋 **Intake forms** — 5-persona tailored client intake forms, live across all tracks
 
 ### Phase 3 Roadmap *(Coming)*
-- 📋 **Intake forms** — 5-persona tailored client intake forms
-- 🔌 **MCP server** — call assessments from Claude, ChatGPT, or any MCP-compatible agent
 - 💳 **Stripe paywall** — hosted Pro and Team tier access
 - 🏛️ **Government edition** — FedRAMP, air-gap, GovCloud infrastructure
 
