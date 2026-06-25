@@ -144,11 +144,9 @@ Built for leaders making investment and transformation decisions.
 
 ### 🎯 Supply Chain Consultant Track ✅ Live
 Built for advisory professionals managing multiple client engagements.
-- Multi-client diagnostic capability across all 11 verticals
-- Client intake forms — shareable pre-assessment questionnaires
-- White-label PDF reports with client branding
-- Side-by-side client comparison and benchmarking
-- Consultant-optimised output format for deliverables
+- Assess any client across all 11 industry verticals
+- Cost-benefit analysis included in every assessment output
+- Follow-up Q&A with live web search for current market data
 
 ### ⚙️ Enterprise Configuration *(Coming — Phase 2)*
 Embed and configure the agent within your organisation's systems with custom branding, access controls, and compliance guardrails.
@@ -187,9 +185,9 @@ This is not just a chatbot. Claude takes autonomous multi-step actions during ev
 - 📧 **Email dispatcher** — branded HTML email reports with domain scores and risk alerts
 - 🚦 **Feature flags** — 60+ features gated across 6 tiers without pricing in code
 - 🔌 **MCP server** — free-tier stdio transport, 3 tools, Claude Desktop & Claude Code ready (v4.2)
-- 📋 **Intake forms** — 5-persona tailored client intake forms, live across all tracks
 
 ### Phase 3 Roadmap *(Coming)*
+- 📋 **Intake forms** — 5-persona tailored client intake forms
 - 💳 **Stripe paywall** — hosted Pro and Team tier access
 - 🏛️ **Government edition** — FedRAMP, air-gap, GovCloud infrastructure
 
