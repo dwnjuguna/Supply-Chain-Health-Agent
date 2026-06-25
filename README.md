@@ -287,11 +287,7 @@ The code is MIT — free forever. The hosted service is where advanced features 
 | Proactive risk alerts | ✅ Self-hosted | — | 🔒 Pro | 🔒 Pro | 🔒 Enterprise | 🔒 Gov |
 | Slack integration | ✅ Self-hosted | — | 🔒 Pro | 🔒 Pro | 🔒 Enterprise | 🔒 Gov |
 | Email delivery | ✅ Self-hosted | — | 🔒 Pro | 🔒 Pro | 🔒 Enterprise | 🔒 Gov |
-| Client intake forms | ✅ Self-hosted | — | 🔒 Pro | 🔒 Pro | 🔒 Enterprise | 🔒 Gov |
 | Jira integration | ✅ Self-hosted | — | — | 🔒 Team | 🔒 Enterprise | 🔒 Gov |
-| Multi-client dashboard | ✅ Self-hosted | — | — | 🔒 Team | 🔒 Enterprise | 🔒 Gov |
-| White-label reports | ✅ Self-hosted | — | — | 🔒 Team | 🔒 Enterprise | 🔒 Gov |
-| API access + webhooks | ✅ Self-hosted | — | — | 🔒 Team | 🔒 Enterprise | 🔒 Gov |
 | SSO / SAML | — | — | — | — | 🔒 Enterprise | 🔒 Gov |
 | Custom verticals | — | — | — | — | 🔒 Enterprise | 🔒 Gov |
 | On-premise deployment | — | — | — | — | 🔒 Enterprise | 🔒 Gov |
