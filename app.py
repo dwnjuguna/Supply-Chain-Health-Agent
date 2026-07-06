@@ -400,6 +400,13 @@ with st.sidebar:
     for band, desc in score_guide:
         st.markdown(f"**{band}** {desc}")
 
+    st.markdown(
+        "<div style='font-size:0.72rem;color:#9CA3AF;margin-top:8px;line-height:1.5;'>"
+        "Scores are benchmarked against 2025–2026 SCOR world-class KPI thresholds "
+        "across 8 supply chain domains. Source: ASCM SCOR Model v13.</div>",
+        unsafe_allow_html=True
+    )
+
     st.markdown("---")
     st.markdown("### 🔗 Links")
     st.markdown("[GitHub Repo](https://github.com/dwnjuguna/supply-chain-health-agent)")
