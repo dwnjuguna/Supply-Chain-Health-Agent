@@ -9,6 +9,73 @@ from domains import DOMAINS
 from verticals import VERTICAL_PRESETS
 from personas import PERSONAS, EXECUTIVE_CONTEXT_QUESTIONS, EXECUTIVE_CUSTOMISATION_OPTIONS
 
+def send_interest_email(first_name, last_name, email):
+    import smtplib
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+    import os
+
+    sender = os.environ.get("GMAIL_SENDER", "stratosal.notifications@gmail.com")
+    password = os.environ.get("GMAIL_APP_PASSWORD", "")
+    recipient = "dnjuguna@wndgv.com"
+
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = f"New Government/Federal Interest — {first_name} {last_name}"
+    msg["From"] = f"Stratos AI Notifications <{sender}>"
+    msg["To"] = recipient
+
+    body = f"""
+New Government/Federal interest registration:
+
+Name:    {first_name} {last_name}
+Email:   {email}
+Time:    {__import__('datetime').datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}
+
+---
+Sent automatically by Supply Chain Health Agent
+Stratos AI LLC — stratosal.com
+    """
+    msg.attach(MIMEText(body, "plain"))
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+        server.login(sender, password)
+        server.sendmail(sender, recipient, msg.as_string())
+
+@st.dialog("Register Your Interest")
+def register_interest_dialog():
+    st.markdown("""
+    <div style="font-size:0.85rem;color:#374151;margin-bottom:1rem;">
+    Be the first to know when our <strong>Government & Federal edition</strong> launches —
+    FedRAMP-authorized, air-gapped, and GovCloud-ready.
+    </div>
+    """, unsafe_allow_html=True)
+
+    first_name = st.text_input("First Name", placeholder="Jane")
+    last_name  = st.text_input("Last Name",  placeholder="Smith")
+    email      = st.text_input("Work Email", placeholder="jane.smith@agency.gov")
+
+    st.markdown("""
+    <div style="font-size:0.72rem;color:#6B7280;margin-top:0.5rem;line-height:1.5;">
+    🔒 Your information will <strong>never</strong> be shared, sold, or disclosed to third parties.
+    We comply fully with <strong>GDPR</strong>, <strong>CCPA</strong>, and all applicable
+    privacy regulations.
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    if st.button("Submit", type="primary", use_container_width=True):
+        if not first_name or not last_name or not email:
+            st.error("Please fill in all fields.")
+        elif "@" not in email or "." not in email:
+            st.error("Please enter a valid email address.")
+        else:
+            try:
+                send_interest_email(first_name, last_name, email)
+                st.success("Thank you! We'll be in touch when Government edition launches.")
+            except Exception as e:
+                st.error("Something went wrong. Please try again or email us directly.")
+
 # ── Page config ───────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="Supply Chain Health Agent",
@@ -59,7 +126,7 @@ st.markdown("""
     .persona-card {
         background: #FFFFFF; border: 2px solid #E5E7EB;
         border-radius: 16px; padding: 1.5rem 1.25rem 1.25rem;
-        text-align: center; height: 270px; min-height: 270px;
+        text-align: center; min-height: 270px;
         transition: border-color 0.15s, box-shadow 0.15s;
         overflow: hidden; box-sizing: border-box;
     }
@@ -76,7 +143,7 @@ st.markdown("""
     .persona-card:hover { border-color: #534AB7; box-shadow: 0 6px 24px rgba(83,74,183,0.12); }
     .persona-card.exec:hover { border-color: #0F6E56; box-shadow: 0 6px 24px rgba(15,110,86,0.12); }
     .persona-card.consultant:hover { border-color: #E8A020; box-shadow: 0 6px 24px rgba(232,160,32,0.12); }
-    .persona-card.disabled { opacity: 0.4; pointer-events: none; }
+    .persona-card.disabled { opacity: 0.45; pointer-events: none; }
     .persona-icon-wrap {
         width: 56px; height: 56px; border-radius: 50%;
         display: flex; align-items: center; justify-content: center;
@@ -178,22 +245,23 @@ if st.session_state.persona is None:
             <div class="persona-title">Enterprise Config</div>
             <div class="persona-desc">Embed with custom branding, SSO, API access,
                 and compliance controls.</div>
-            <span class="persona-badge" style="background:#9CA3AF;">Phase 2</span>
-            <div style="margin-top:12px;font-size:0.75rem;color:#9CA3AF;font-weight:500;">Coming Soon</div>
+            <span class="persona-badge" style="background:#9CA3AF;">Coming Soon</span>
         </div>
         """, unsafe_allow_html=True)
 
     with col5:
         st.markdown("""
-        <div class="persona-card disabled">
+        <div class="persona-card disabled" style="position:relative;">
             <div class="persona-icon-wrap" style="background:#FEF2F2;">🏛️</div>
             <div class="persona-title">Government / Federal</div>
             <div class="persona-desc">FedRAMP, air-gap, GovCloud, and classified
                 deployment for federal agencies.</div>
-            <span class="persona-badge" style="background:#9CA3AF;">Phase 3</span>
-            <div style="margin-top:12px;font-size:0.75rem;color:#9CA3AF;font-weight:500;">Register Interest</div>
+            <span class="persona-badge" style="background:#9CA3AF;">Register Interest</span>
         </div>
         """, unsafe_allow_html=True)
+        if st.button("__register__", key="btn_gov_interest",
+                     use_container_width=True):
+            register_interest_dialog()
 
     st.markdown("""
     <style>
@@ -229,6 +297,26 @@ if st.session_state.persona is None:
         [data-testid="stColumn"]:nth-child(3):has(button:hover) .persona-card {
             border-color: #E8A020;
             box-shadow: 0 6px 24px rgba(232,160,32,0.12);
+        }
+        [data-testid="stColumn"]:nth-child(5) [data-testid="stButton"] button {
+            position: absolute;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: auto !important;
+            height: 28px;
+            background: #9CA3AF;
+            border: none;
+            border-radius: 20px;
+            color: #FFFFFF;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            padding: 3px 12px;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 10;
         }
     </style>
     """, unsafe_allow_html=True)
