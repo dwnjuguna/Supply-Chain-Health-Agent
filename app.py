@@ -124,91 +124,114 @@ if st.session_state.persona is None:
     )
     st.markdown("<br>", unsafe_allow_html=True)
 
-    import streamlit.components.v1 as components
-    components.html("""
-    <!DOCTYPE html>
-    <html>
-    <head>
+    col1, col2, col3, col4, col5 = st.columns(5, gap="large")
+
+    with col1:
+        st.markdown("""
+        <div class="persona-card">
+            <div class="persona-icon-wrap" style="background:#EEEDFE;">📊</div>
+            <div class="persona-title">SC Manager / Analyst</div>
+            <div class="persona-desc">Deep KPI diagnostics, benchmark comparisons,
+                domain inputs, and cost-benefit analysis.</div>
+            <span class="persona-badge" style="background:#534AB7;">Practitioner</span>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("Select — Analyst", key="btn_analyst",
+                     use_container_width=True, type="primary"):
+            st.session_state.persona = "analyst"
+            st.rerun()
+
+    with col2:
+        st.markdown("""
+        <div class="persona-card exec">
+            <div class="persona-icon-wrap" style="background:#E1F5EE;">🏢</div>
+            <div class="persona-title">CSCO / COO / VP SC</div>
+            <div class="persona-desc">Strategic scenarios, maturity roadmap,
+                and board-ready summaries for investment decisions.</div>
+            <span class="persona-badge" style="background:#0F6E56;">Executive</span>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("Select — Executive", key="btn_exec",
+                     use_container_width=True, type="primary"):
+            st.session_state.persona = "executive"
+            st.rerun()
+
+    with col3:
+        st.markdown("""
+        <div class="persona-card consultant">
+            <div class="persona-icon-wrap" style="background:#FEF3C7;">🎯</div>
+            <div class="persona-title">SC Consultant</div>
+            <div class="persona-desc">Multi-client diagnostics, white-label reports,
+                and client intake forms for advisory practices.</div>
+            <span class="persona-badge" style="background:#E8A020;">Consultant</span>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("Select — Consultant", key="btn_consultant",
+                     use_container_width=True, type="primary"):
+            st.session_state.persona = "consultant"
+            st.rerun()
+
+    with col4:
+        st.markdown("""
+        <div class="persona-card disabled">
+            <div class="persona-icon-wrap" style="background:#F1EFE8;">⚙️</div>
+            <div class="persona-title">Enterprise Config</div>
+            <div class="persona-desc">Embed with custom branding, SSO, API access,
+                and compliance controls.</div>
+            <span class="persona-badge" style="background:#9CA3AF;">Phase 2</span>
+            <div style="margin-top:12px;font-size:0.75rem;color:#9CA3AF;font-weight:500;">Coming Soon</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col5:
+        st.markdown("""
+        <div class="persona-card disabled">
+            <div class="persona-icon-wrap" style="background:#FEF2F2;">🏛️</div>
+            <div class="persona-title">Government / Federal</div>
+            <div class="persona-desc">FedRAMP, air-gap, GovCloud, and classified
+                deployment for federal agencies.</div>
+            <span class="persona-badge" style="background:#9CA3AF;">Phase 3</span>
+            <div style="margin-top:12px;font-size:0.75rem;color:#9CA3AF;font-weight:500;">Register Interest</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("""
     <style>
-      * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
-      body { background: transparent; padding: 8px 0; }
-      .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
-      .card {
-        background: #FFFFFF; border: 2px solid #E5E7EB;
-        border-radius: 16px; padding: 1.5rem 1.25rem 1.25rem;
-        text-align: center; height: 270px;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s;
-        user-select: none;
-      }
-      .card:hover { border-color: #534AB7; box-shadow: 0 6px 24px rgba(83,74,183,0.12); }
-      .card.exec:hover { border-color: #0F6E56; box-shadow: 0 6px 24px rgba(15,110,86,0.12); }
-      .card.consultant:hover { border-color: #E8A020; box-shadow: 0 6px 24px rgba(232,160,32,0.12); }
-      .card.disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
-      .icon-wrap {
-        width: 56px; height: 56px; border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        margin: 0 auto 14px; font-size: 1.5rem;
-      }
-      .title { font-weight: 600; font-size: 0.88rem; color: #1A1A2E; margin-bottom: 8px; }
-      .desc { font-size: 0.77rem; color: #374151; line-height: 1.5; margin-bottom: 12px; }
-      .badge {
-        display: inline-block; border-radius: 20px; padding: 3px 12px;
-        font-size: 0.7rem; font-weight: 600; letter-spacing: 0.3px;
-        color: #FFFFFF; text-transform: uppercase;
-      }
-      .disabled-label { margin-top: 10px; font-size: 0.75rem; color: #9CA3AF; font-weight: 500; }
+        [data-testid="stColumn"]:nth-child(1) [data-testid="stButton"] button,
+        [data-testid="stColumn"]:nth-child(2) [data-testid="stButton"] button,
+        [data-testid="stColumn"]:nth-child(3) [data-testid="stButton"] button {
+            position: relative;
+            margin-top: -310px;
+            height: 310px;
+            opacity: 0.01;
+            z-index: 999;
+            cursor: pointer;
+            border-radius: 16px;
+            background: transparent !important;
+            border: none !important;
+        }
+        [data-testid="stColumn"]:nth-child(1) [data-testid="stButton"] button:hover,
+        [data-testid="stColumn"]:nth-child(2) [data-testid="stButton"] button:hover,
+        [data-testid="stColumn"]:nth-child(3) [data-testid="stButton"] button:hover {
+            opacity: 0.01 !important;
+            box-shadow: none !important;
+        }
+        [data-testid="stColumn"]:nth-child(1):has(button:hover) .persona-card,
+        [data-testid="stColumn"]:nth-child(2):has(button:hover) .persona-card,
+        [data-testid="stColumn"]:nth-child(3):has(button:hover) .persona-card {
+            border-color: #534AB7;
+            box-shadow: 0 6px 24px rgba(83,74,183,0.12);
+        }
+        [data-testid="stColumn"]:nth-child(2):has(button:hover) .persona-card {
+            border-color: #0F6E56;
+            box-shadow: 0 6px 24px rgba(15,110,86,0.12);
+        }
+        [data-testid="stColumn"]:nth-child(3):has(button:hover) .persona-card {
+            border-color: #E8A020;
+            box-shadow: 0 6px 24px rgba(232,160,32,0.12);
+        }
     </style>
-    </head>
-    <body>
-    <div class="grid">
-
-      <div class="card" onclick="selectPersona('analyst')">
-        <div class="icon-wrap" style="background:#EEEDFE;">📊</div>
-        <div class="title">SC Manager / Analyst</div>
-        <div class="desc">Deep KPI diagnostics, benchmark comparisons, domain inputs, and cost-benefit analysis.</div>
-        <span class="badge" style="background:#534AB7;">Practitioner</span>
-      </div>
-
-      <div class="card exec" onclick="selectPersona('executive')">
-        <div class="icon-wrap" style="background:#E1F5EE;">🏢</div>
-        <div class="title">CSCO / COO / VP SC</div>
-        <div class="desc">Strategic scenarios, maturity roadmap, and board-ready summaries for investment decisions.</div>
-        <span class="badge" style="background:#0F6E56;">Executive</span>
-      </div>
-
-      <div class="card consultant" onclick="selectPersona('consultant')">
-        <div class="icon-wrap" style="background:#FEF3C7;">🎯</div>
-        <div class="title">SC Consultant</div>
-        <div class="desc">Multi-client diagnostics, white-label reports, and client intake forms for advisory practices.</div>
-        <span class="badge" style="background:#E8A020;">Consultant</span>
-      </div>
-
-      <div class="card disabled">
-        <div class="icon-wrap" style="background:#F1EFE8;">⚙️</div>
-        <div class="title">Enterprise Config</div>
-        <div class="desc">Embed with custom branding, SSO, API access, and compliance controls.</div>
-        <span class="badge" style="background:#9CA3AF;">Phase 2</span>
-        <div class="disabled-label">Coming Soon</div>
-      </div>
-
-      <div class="card disabled">
-        <div class="icon-wrap" style="background:#FEF2F2;">🏛️</div>
-        <div class="title">Government / Federal</div>
-        <div class="desc">FedRAMP, air-gap, GovCloud, and classified deployment for federal agencies.</div>
-        <span class="badge" style="background:#9CA3AF;">Phase 3</span>
-        <div class="disabled-label">Register Interest</div>
-      </div>
-
-    </div>
-    <script>
-      function selectPersona(persona) {
-        window.parent.location.search = '?persona=' + persona;
-      }
-    </script>
-    </body>
-    </html>
-    """, height=300, scrolling=False)
+    """, unsafe_allow_html=True)
 
     st.stop()
 
