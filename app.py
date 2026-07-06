@@ -328,7 +328,10 @@ persona = st.session_state.persona
 
 # Domain pills
 domains_html = "".join(f'<span class="domain-pill">{d["label"]}</span>' for d in DOMAINS)
-st.markdown(domains_html, unsafe_allow_html=True)
+st.markdown(
+    f'<div style="font-size:0.8rem;color:#6B7280;margin-bottom:6px;">📋 <strong>Assessment coverage:</strong></div>{domains_html}',
+    unsafe_allow_html=True
+)
 st.markdown("<br>", unsafe_allow_html=True)
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
