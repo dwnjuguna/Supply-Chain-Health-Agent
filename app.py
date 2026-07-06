@@ -497,6 +497,13 @@ if mode == "custom":
         )
 
 # ── Run assessment ─────────────────────────────────────────────────────────────
+st.markdown(
+    "<div style='font-size:0.82rem;color:#6B7280;margin-bottom:8px;'>"
+    "⚡ Claude will benchmark your supply chain across all 8 SCOR domains — "
+    "scoring each against 2025–2026 world-class KPIs, identifying top risks, "
+    "and generating prioritized recommendations. Takes 20–40 seconds.</div>",
+    unsafe_allow_html=True
+)
 col_btn1, col_btn2, _ = st.columns([1, 1, 4])
 with col_btn1:
     run_clicked = st.button("🚀 Run Assessment", type="primary", use_container_width=True)
