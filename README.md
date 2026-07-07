@@ -332,6 +332,12 @@ streamlit run app.py
 python3 cli.py
 ```
 
+### 6. Or use as an MCP server
+```bash
+python3 -m mcp_server.server
+# Register in claude_desktop_config.json or via: claude mcp add supply-chain-health-agent -- python3 -m mcp_server.server
+```
+
 ---
 
 ## MCP Server (Claude Desktop & Claude Code)
@@ -531,6 +537,7 @@ MIT License — see [LICENSE](LICENSE) for details. Free to use, share, and adap
 |---|---|
 | 🌐 Live app | [supply-chain-health-agent.streamlit.app](https://supply-chain-health-agent.streamlit.app) |
 | 📄 Product overview PDF | `SC_Health_Agent_Overview_v4_2.pdf` (in this repo) |
+| 📊 Executive Scoreboard | `SC_Health_Agent_Scoreboard_A4.pdf` (in this repo) — sample one-pager output |
 | 📊 Technical architecture deck PDF | `SC_Health_Agent_Tech_Deck_v4_2.pdf` (in this repo) |
 | 📖 Anthropic Claude SDK | [docs.anthropic.com](https://docs.anthropic.com) |
 | 🔑 Get an API key | [console.anthropic.com](https://console.anthropic.com) |
